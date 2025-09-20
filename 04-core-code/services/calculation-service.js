@@ -24,16 +24,12 @@ export class CalculationService {
             return { quoteData, firstError: { message: "Product strategy not provided." } };
         }
 
-        // Create a deep copy to avoid mutating the original state directly
         const updatedQuoteData = JSON.parse(JSON.stringify(quoteData));
-        // [重構] 不再假設 items 的具體名稱，而是從 strategy 獲取
         const items = updatedQuoteData.rollerBlindItems; 
         let firstError = null;
 
         items.forEach((item, index) => {
-            // Clear old prices before recalculating
             item.linePrice = null;
-
             if (item.width && item.height && item.fabricType) {
                 const priceMatrix = this.configManager.getPriceMatrix(item.fabricType);
                 const result = productStrategy.calculatePrice(item, priceMatrix);
@@ -41,7 +37,6 @@ export class CalculationService {
                 if (result.price !== null) {
                     item.linePrice = result.price;
                 } else if (result.error && !firstError) {
-                    // Only record the first error encountered
                     const errorColumn = result.error.toLowerCase().includes('width') ? 'width' : 'height';
                     firstError = {
                         message: `Row ${index + 1}: ${result.error}`,
@@ -52,23 +47,56 @@ export class CalculationService {
             }
         });
 
-        // Calculate sum based on newly calculated prices
-        const totalSum = items.reduce((sum, item) => sum + (item.linePrice || 0), 0);
-        updatedQuoteData.summary.totalSum = totalSum;
+        const itemsTotal = items.reduce((sum, item) => sum + (item.linePrice || 0), 0);
+        
+        let accessoriesTotal = 0;
+        if (updatedQuoteData.summary && updatedQuoteData.summary.accessories) {
+            const acc = updatedQuoteData.summary.accessories;
+            accessoriesTotal += acc.winder?.price || 0;
+            accessoriesTotal += acc.motor?.price || 0;
+            accessoriesTotal += acc.remote?.price || 0;
+            accessoriesTotal += acc.charger?.price || 0;
+            accessoriesTotal += acc.cord3m?.price || 0;
+        }
+
+        updatedQuoteData.summary.totalSum = itemsTotal + accessoriesTotal;
 
         return { updatedQuoteData, firstError };
     }
 
-    /**
-     * [NEW] Calculates the total price for Dual brackets.
-     * @param {Array<object>} items - The list of roller blind items.
-     * @returns {number} The total price for dual brackets.
-     */
     calculateDualPrice(items) {
         const dualCount = items.filter(item => item.dual === 'D').length;
         const pricePerPair = 15;
-        // Every 2 'D's cost $15. Use Math.floor to ignore single odd 'D'.
         const totalPrice = Math.floor(dualCount / 2) * pricePerPair;
         return totalPrice;
+    }
+
+    // --- K5 Accessory Calculation Methods ---
+
+    calculateWinderPrice(items) {
+        const count = items.filter(item => item.winder === 'HD').length;
+        const pricePerUnit = this.configManager.getAccessoryPrice('winderHD');
+        return count * pricePerUnit;
+    }
+
+    calculateMotorPrice(items) {
+        const count = items.filter(item => !!item.motor).length;
+        const pricePerUnit = this.configManager.getAccessoryPrice('motorStandard');
+        return count * pricePerUnit;
+    }
+
+    calculateRemotePrice(count) {
+        const pricePerUnit = this.configManager.getAccessoryPrice('remoteStandard');
+        return count * pricePerUnit;
+    }
+
+    calculateChargerPrice(count) {
+        const pricePerUnit = this.configManager.getAccessoryPrice('chargerStandard');
+        return count * pricePerUnit;
+    }
+
+    calculateCordPrice(count) {
+        const pricePerUnit = this.configManager.getAccessoryPrice('cord3m');
+        return count * pricePerUnit;
     }
 }

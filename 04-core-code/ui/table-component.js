@@ -24,6 +24,8 @@ const COLUMN_CONFIG = {
     fabricTypeDisplay: { header: 'Type', className: 'col-type', dataColumn: 'fabricType', cellType: 'td' },
     dual: { header: 'Dual', className: 'col-dual', dataColumn: 'dual', cellType: 'td' },
     chain: { header: 'Chain', className: 'col-chain', dataColumn: 'chain', cellType: 'td' },
+    winder: { header: 'Winder', className: 'col-winder', dataColumn: 'winder', cellType: 'td' },
+    motor: { header: 'Motor', className: 'col-motor', dataColumn: 'motor', cellType: 'td' },
 };
 
 
@@ -155,6 +157,14 @@ export class TableComponent {
             dual: (cell, item) => {
                 cell.textContent = item.dual || '';
                 cell.classList.toggle('dual-cell-active', item.dual === 'D');
+            },
+            winder: (cell, item) => {
+                cell.textContent = item.winder || '';
+                cell.classList.toggle('winder-cell-active', !!item.winder);
+            },
+            motor: (cell, item) => {
+                cell.textContent = item.motor || '';
+                cell.classList.toggle('motor-cell-active', !!item.motor);
             },
             // Default renderer for simple text properties
             default: (cell, item, index, state) => {

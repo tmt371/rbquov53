@@ -18,6 +18,17 @@ export const initialState = {
         isEditing: false,
         activeCell: { rowIndex: 0, column: 'width' },
         selectedRowIndex: null,
+
+        // --- K5 Accessory UI State ---
+        k5ActiveMode: null, // 'winder', 'motor', 'remote', 'charger', 'cord'
+        k5RemoteCount: 0,
+        k5ChargerCount: 0,
+        k5CordCount: 0,
+        k5WinderTotalPrice: null,
+        k5MotorTotalPrice: null,
+        k5RemoteTotalPrice: null,
+        k5ChargerTotalPrice: null,
+        k5CordTotalPrice: null
     },
     quoteData: {
         // 核心項目列表
@@ -55,7 +66,15 @@ export const initialState = {
         },
         // 總價總結
         summary: { 
-            totalSum: null
+            totalSum: null,
+            // --- K5 Accessories Data ---
+            accessories: {
+                winder: { count: 0, price: 0 },
+                motor: { count: 0, price: 0 },
+                remote: { type: 'standard', count: 0, price: 0 },
+                charger: { count: 0, price: 0 },
+                cord3m: { count: 0, price: 0 }
+            }
         }
     }
 };

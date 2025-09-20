@@ -14,7 +14,8 @@ export class DetailConfigView {
         k1LocationView,
         k2FabricView,
         k3OptionsView,
-        k4AccessoriesView
+        k4AccessoriesView,
+        k5AccessoriesView
     }) {
         this.quoteService = quoteService;
         this.uiService = uiService;
@@ -27,19 +28,13 @@ export class DetailConfigView {
         this.k2View = k2FabricView;
         this.k3View = k3OptionsView;
         this.k4View = k4AccessoriesView;
+        this.k5View = k5AccessoriesView;
 
-        // [FIX] All event subscriptions are now handled by AppController to prevent conflicts.
-        // This constructor should be clean of subscriptions.
-        
         console.log("DetailConfigView Refactored as a Manager View.");
     }
 
     // --- Event Handlers that need to delegate to sub-views ---
 
-    /**
-     * Activates the logic for a specific tab. Called by AppController.
-     * @param {string} tabId The ID of the tab to activate (e.g., 'k1-tab').
-     */
     activateTab(tabId) {
         this.uiService.setActiveTab(tabId);
 
@@ -49,7 +44,6 @@ export class DetailConfigView {
                 break;
             case 'k2-tab':
                 this.k2View.activate();
-                // [FIX] Explicitly update panel state on tab activation to ensure correct initial state.
                 this.k2View._updatePanelInputsState();
                 break;
             case 'k3-tab':
@@ -57,6 +51,9 @@ export class DetailConfigView {
                 break;
             case 'k4-tab':
                 this.k4View.activate();
+                break;
+            case 'k5-tab':
+                this.k5View.activate();
                 break;
             default:
                 break;
@@ -118,9 +115,22 @@ export class DetailConfigView {
         this.k4View.handleK4ChainEnterPressed({ value });
     }
 
+    handleK5ModeChange({ mode }) {
+        this.k5View.handleK5ModeChange({ mode });
+    }
+
+    handleK5CounterChanged({ accessory, direction }) {
+        this.k5View.handleK5CounterChanged({ accessory, direction });
+    }
+
     handleTableCellClick({ rowIndex, column }) {
-        const { activeEditMode, k4ActiveMode } = this.uiService.getState();
+        const { activeEditMode, k4ActiveMode, k5ActiveMode } = this.uiService.getState();
         
+        if (k5ActiveMode) {
+            this.k5View.handleTableCellClick({ rowIndex, column });
+            return;
+        }
+
         if (activeEditMode === 'K1') {
             this.k1View.handleTableCellClick({ rowIndex });
             return;

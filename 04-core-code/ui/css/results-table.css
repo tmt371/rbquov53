@@ -47,6 +47,11 @@
 .results-table .col-chain {
     width: 80px;
 }
+.results-table .col-winder,
+.results-table .col-motor {
+    width: 80px;
+}
+
 
 /* --- Cell States & Special Styles --- */
 .results-table td.target-cell {
@@ -130,10 +135,12 @@
 
     .app-container.detail-view-active .results-table .col-sequence { width: 29px; }
     .app-container.detail-view-active .results-table .col-type { width: 50px; }
-    .app-container.detail-view-active .results-table .col-location { width: 102px; }
+    .app-container.detail-view-active .results-table .col-location { width: 90px; } /* [MODIFIED] Reduced width */
     .app-container.detail-view-active .results-table .col-over,
     .app-container.detail-view-active .results-table .col-oi,
     .app-container.detail-view-active .results-table .col-lr { width: 47px; }
     .app-container.detail-view-active .results-table .col-dual,
     .app-container.detail-view-active .results-table .col-chain { width: 47px; }
+    .app-container.detail-view-active .results-table .col-winder,
+    .app-container.detail-view-active .results-table .col-motor { width: 60px; } /* [NEW] Added width */
 }

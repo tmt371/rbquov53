@@ -47,13 +47,11 @@ export class AppController {
 
     _subscribeDetailViewEvents() {
         const delegate = (handlerName, data) => {
-            // Only delegate if the current view is DETAIL_CONFIG
             if (this.uiService.getState().currentView === 'DETAIL_CONFIG') {
                 this.detailConfigView[handlerName](data);
             }
         };
         
-        // This is a special case as it can be triggered from QuickQuoteView as well
         this.eventAggregator.subscribe('tableCellClicked', (data) => {
             const currentView = this.uiService.getState().currentView;
             if (currentView === 'QUICK_QUOTE') {
@@ -82,6 +80,8 @@ export class AppController {
         this.eventAggregator.subscribe('userRequestedBatchCycle', (data) => delegate('handleBatchCycle', data));
         this.eventAggregator.subscribe('k4ModeChanged', (data) => delegate('handleK4ModeChange', data));
         this.eventAggregator.subscribe('k4ChainEnterPressed', (data) => delegate('handleK4ChainEnterPressed', data));
+        this.eventAggregator.subscribe('k5ModeChanged', (data) => delegate('handleK5ModeChange', data));
+        this.eventAggregator.subscribe('k5CounterChanged', (data) => delegate('handleK5CounterChanged', data));
     }
 
     _subscribeGlobalEvents() {
@@ -97,10 +97,8 @@ export class AppController {
         const currentView = this.uiService.getState().currentView;
         if (currentView === 'QUICK_QUOTE') {
             this.uiService.setCurrentView('DETAIL_CONFIG');
-            // Activate the default tab for the detail view
             this.detailConfigView.activateTab('k1-tab'); 
         } else {
-            // This handles toggling back to the quick quote view
             this.uiService.setCurrentView('QUICK_QUOTE');
             this.uiService.setVisibleColumns(initialState.ui.visibleColumns);
             this._publishStateChange();

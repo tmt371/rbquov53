@@ -11,6 +11,8 @@ export class QuoteService {
         // 使用深拷貝確保 QuoteService 擁有獨立的、純淨的資料狀態
         this.quoteData = JSON.parse(JSON.stringify(initialState.quoteData));
         this.productFactory = productFactory;
+        this.initialSummary = JSON.parse(JSON.stringify(initialState.quoteData.summary));
+
 
         const currentProduct = 'rollerBlind'; // 未來此值可由外部傳入
         this.productStrategy = this.productFactory.getProductStrategy(currentProduct);
@@ -61,22 +63,10 @@ export class QuoteService {
     clearRow(selectedIndex) {
         const itemToClear = this._getItems()[selectedIndex];
         if (itemToClear) {
-            // --- Phase 1 Fields ---
-            itemToClear.width = null;
-            itemToClear.height = null;
-            itemToClear.fabricType = null;
-            itemToClear.linePrice = null;
-            // --- Phase 2 Fields ---
-            itemToClear.location = '';
-            itemToClear.fabric = '';
-            itemToClear.color = '';
-            itemToClear.over = '';
-            itemToClear.oi = '';
-            itemToClear.lr = '';
-            itemToClear.dual = '';
-            itemToClear.chain = null;
-            itemToClear.winder = '';
-            itemToClear.motor = '';
+            const newItem = this.productStrategy.getInitialItemData();
+            // Preserve itemId, but clear all other fields
+            newItem.itemId = itemToClear.itemId;
+            this._getItems()[selectedIndex] = newItem;
         }
     }
 
@@ -87,6 +77,13 @@ export class QuoteService {
         if (targetItem[column] !== value) {
             targetItem[column] = value;
             targetItem.linePrice = null;
+
+            // Auto-set Winder if area exceeds threshold and motor is not set
+            if ((column === 'width' || column === 'height') && targetItem.width && targetItem.height) {
+                if ((targetItem.width * targetItem.height) > 4000000 && !targetItem.motor) {
+                    targetItem.winder = 'HD';
+                }
+            }
             
             this.consolidateEmptyRows();
             return true;
@@ -101,6 +98,28 @@ export class QuoteService {
             return true;
         }
         return false;
+    }
+
+    updateWinderMotorProperty(rowIndex, property, value) {
+        const item = this._getItems()[rowIndex];
+        if (!item) return false;
+
+        if (item[property] !== value) {
+            item[property] = value;
+            // Mutex Logic: If a value is set, clear the other property
+            if (value) {
+                if (property === 'winder') item.motor = '';
+                if (property === 'motor') item.winder = '';
+            }
+            return true;
+        }
+        return false;
+    }
+    
+    updateAccessorySummary(data) {
+        if (data && this.quoteData.summary.accessories) {
+            Object.assign(this.quoteData.summary.accessories, data);
+        }
     }
     
     cycleItemProperty(rowIndex, property, options) {
@@ -236,10 +255,8 @@ export class QuoteService {
 
     reset() {
         const initialItem = this.productStrategy.getInitialItemData();
-        this.quoteData = {
-            [this.itemListName]: [initialItem],
-            summary: { totalSum: null }
-        };
+        this.quoteData[this.itemListName] = [initialItem];
+        this.quoteData.summary = JSON.parse(JSON.stringify(this.initialSummary));
     }
 
     hasData() {

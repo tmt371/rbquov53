@@ -20,7 +20,8 @@ import { DetailConfigView } from './ui/views/detail-config-view.js';
 import { K1LocationView } from './ui/views/k1-location-view.js';
 import { K2FabricView } from './ui/views/k2-fabric-view.js';
 import { K3OptionsView } from './ui/views/k3-options-view.js';
-import { K4AccessoriesView } from './ui/views/k4-accessories-view.js'; // [REFACTOR] Import the new sub-view
+import { K4AccessoriesView } from './ui/views/k4-accessories-view.js';
+import { K5AccessoriesView } from './ui/views/k5-accessories-view.js';
 
 
 const AUTOSAVE_STORAGE_KEY = 'quoteAutoSaveData';
@@ -80,7 +81,6 @@ class App {
             publishStateChangeCallback
         });
 
-        // [REFACTOR] Instantiate the sub-views first
         const k1LocationView = new K1LocationView({
             quoteService,
             uiService,
@@ -108,6 +108,14 @@ class App {
             publishStateChangeCallback
         });
 
+        const k5AccessoriesView = new K5AccessoriesView({
+            quoteService,
+            uiService,
+            calculationService,
+            eventAggregator: this.eventAggregator,
+            publishStateChangeCallback
+        });
+
         const detailConfigView = new DetailConfigView({
             quoteService,
             uiService,
@@ -117,7 +125,8 @@ class App {
             k1LocationView: k1LocationView,
             k2FabricView: k2FabricView,
             k3OptionsView: k3OptionsView,
-            k4AccessoriesView: k4AccessoriesView // [REFACTOR] Inject the sub-view instance
+            k4AccessoriesView: k4AccessoriesView,
+            k5AccessoriesView: k5AccessoriesView
         });
         
         this.appController = new AppController({
@@ -128,8 +137,6 @@ class App {
             quickQuoteView,
             detailConfigView
         });
-        
-        // UIManager and InputHandler are instantiated after HTML is loaded
     }
 
     async _loadPartials() {
@@ -149,7 +156,7 @@ class App {
     async run() {
         console.log("Application starting...");
         
-        await this._loadPartials(); // Load HTML first
+        await this._loadPartials();
 
         this.inputHandler = new InputHandler(this.eventAggregator);
         this.uiManager = new UIManager(

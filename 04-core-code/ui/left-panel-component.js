@@ -32,6 +32,29 @@ export class LeftPanelComponent {
         this.k4ChainButton = document.getElementById('btn-k4-chain');
         this.k4DualPriceValue = document.querySelector('#k4-dual-price-display .price-value');
 
+        // K5 Panel
+        this.k5WinderButton = document.getElementById('btn-k5-winder');
+        this.k5MotorButton = document.getElementById('btn-k5-motor');
+        this.k5RemoteButton = document.getElementById('btn-k5-remote');
+        this.k5ChargerButton = document.getElementById('btn-k5-charger');
+        this.k5CordButton = document.getElementById('btn-k5-3m-cord');
+        
+        this.k5WinderDisplay = document.getElementById('k5-display-winder');
+        this.k5MotorDisplay = document.getElementById('k5-display-motor');
+        this.k5RemoteDisplay = document.getElementById('k5-display-remote');
+        this.k5ChargerDisplay = document.getElementById('k5-display-charger');
+        this.k5CordDisplay = document.getElementById('k5-display-cord');
+
+        this.k5RemoteAddBtn = document.getElementById('btn-k5-remote-add');
+        this.k5RemoteSubtractBtn = document.getElementById('btn-k5-remote-subtract');
+        this.k5RemoteCountDisplay = document.getElementById('k5-display-remote-count');
+        this.k5ChargerAddBtn = document.getElementById('btn-k5-charger-add');
+        this.k5ChargerSubtractBtn = document.getElementById('btn-k5-charger-subtract');
+        this.k5ChargerCountDisplay = document.getElementById('k5-display-charger-count');
+        this.k5CordAddBtn = document.getElementById('btn-k5-cord-add');
+        this.k5CordSubtractBtn = document.getElementById('btn-k5-cord-subtract');
+        this.k5CordCountDisplay = document.getElementById('k5-display-cord-count');
+
         this.tabButtons = this.panelElement.querySelectorAll('.tab-button');
         this.tabContents = this.panelElement.querySelectorAll('.tab-content');
         
@@ -44,15 +67,17 @@ export class LeftPanelComponent {
     }
 
     _updateTabStates(uiState) {
-        const { activeEditMode, activeTabId, k4ActiveMode } = uiState;
-        const isInEditMode = activeEditMode !== null || k4ActiveMode !== null;
+        const { activeEditMode, activeTabId, k4ActiveMode, k5ActiveMode } = uiState;
+        const isInEditMode = activeEditMode !== null || k4ActiveMode !== null || k5ActiveMode !== null;
 
         const activeTabButton = document.getElementById(activeTabId);
         const activeContentTarget = activeTabButton ? activeTabButton.dataset.tabTarget : null;
 
         this.tabButtons.forEach(button => {
-            button.classList.toggle('active', button.id === activeTabId);
-            button.disabled = isInEditMode && button.id !== activeTabId;
+            const isThisButtonActive = button.id === activeTabId;
+            button.classList.toggle('active', isThisButtonActive);
+            // Disable other tabs if any edit mode is active
+            button.disabled = isInEditMode && !isThisButtonActive;
         });
 
         this.tabContents.forEach(content => {
@@ -71,7 +96,12 @@ export class LeftPanelComponent {
     }
 
     _updatePanelButtonStates(uiState, quoteData) {
-        const { activeEditMode, locationInputValue, lfModifiedRowIndexes, k4ActiveMode, k4DualPrice, targetCell, chainInputValue } = uiState;
+        const { 
+            activeEditMode, locationInputValue, lfModifiedRowIndexes, 
+            k4ActiveMode, k4DualPrice, targetCell, chainInputValue,
+            k5ActiveMode, k5RemoteCount, k5ChargerCount, k5CordCount,
+            k5WinderTotalPrice, k5MotorTotalPrice, k5RemoteTotalPrice, k5ChargerTotalPrice, k5CordTotalPrice
+        } = uiState;
         const { rollerBlindItems } = quoteData;
 
         // --- K1 Location Input State ---
@@ -118,13 +148,11 @@ export class LeftPanelComponent {
         if (this.k4DualButton) {
             const isDisabled = k4ActiveMode !== null && k4ActiveMode !== 'dual';
             this.k4DualButton.classList.toggle('active', k4ActiveMode === 'dual');
-            this.k4DualButton.classList.toggle('disabled-by-mode', isDisabled);
             this.k4DualButton.disabled = isDisabled;
         }
         if (this.k4ChainButton) {
             const isDisabled = k4ActiveMode !== null && k4ActiveMode !== 'chain';
             this.k4ChainButton.classList.toggle('active', k4ActiveMode === 'chain');
-            this.k4ChainButton.classList.toggle('disabled-by-mode', isDisabled);
             this.k4ChainButton.disabled = isDisabled;
         }
         
@@ -143,5 +171,45 @@ export class LeftPanelComponent {
                 this.k4DualPriceValue.textContent = newText;
             }
         }
+
+        // --- K5 Button, Display, and Counter States ---
+        const k5Buttons = [
+            { el: this.k5WinderButton, mode: 'winder' },
+            { el: this.k5MotorButton, mode: 'motor' },
+            { el: this.k5RemoteButton, mode: 'remote' },
+            { el: this.k5ChargerButton, mode: 'charger' },
+            { el: this.k5CordButton, mode: 'cord' }
+        ];
+        
+        const isAnyK5ModeActive = k5ActiveMode !== null;
+        k5Buttons.forEach(({ el, mode }) => {
+            if (el) {
+                const isActive = k5ActiveMode === mode;
+                el.classList.toggle('active', isActive);
+                el.disabled = isAnyK5ModeActive && !isActive;
+            }
+        });
+
+        const formatPrice = (price) => (typeof price === 'number') ? `$${price.toFixed(2)}` : '';
+        if (this.k5WinderDisplay) this.k5WinderDisplay.value = formatPrice(k5WinderTotalPrice);
+        if (this.k5MotorDisplay) this.k5MotorDisplay.value = formatPrice(k5MotorTotalPrice);
+        if (this.k5RemoteDisplay) this.k5RemoteDisplay.value = formatPrice(k5RemoteTotalPrice);
+        if (this.k5ChargerDisplay) this.k5ChargerDisplay.value = formatPrice(k5ChargerTotalPrice);
+        if (this.k5CordDisplay) this.k5CordDisplay.value = formatPrice(k5CordTotalPrice);
+
+        if (this.k5RemoteCountDisplay) this.k5RemoteCountDisplay.value = k5RemoteCount;
+        const remoteBtnsDisabled = k5ActiveMode !== 'remote';
+        if (this.k5RemoteAddBtn) this.k5RemoteAddBtn.disabled = remoteBtnsDisabled;
+        if (this.k5RemoteSubtractBtn) this.k5RemoteSubtractBtn.disabled = remoteBtnsDisabled;
+
+        if (this.k5ChargerCountDisplay) this.k5ChargerCountDisplay.value = k5ChargerCount;
+        const chargerBtnsDisabled = k5ActiveMode !== 'charger';
+        if (this.k5ChargerAddBtn) this.k5ChargerAddBtn.disabled = chargerBtnsDisabled;
+        if (this.k5ChargerSubtractBtn) this.k5ChargerSubtractBtn.disabled = chargerBtnsDisabled;
+
+        if (this.k5CordCountDisplay) this.k5CordCountDisplay.value = k5CordCount;
+        const cordBtnsDisabled = k5ActiveMode !== 'cord';
+        if (this.k5CordAddBtn) this.k5CordAddBtn.disabled = cordBtnsDisabled;
+        if (this.k5CordSubtractBtn) this.k5CordSubtractBtn.disabled = cordBtnsDisabled;
     }
 }

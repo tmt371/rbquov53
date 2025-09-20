@@ -22,8 +22,22 @@ export class UIService {
         this.state.k4ActiveMode = null; // 'dual', or 'chain'
         this.state.chainInputValue = '';
         this.state.k4DualPrice = null;
+
+        this._initializeK5State();
         
         console.log("UIService Initialized.");
+    }
+
+    _initializeK5State() {
+        this.state.k5ActiveMode = null;
+        this.state.k5RemoteCount = 0;
+        this.state.k5ChargerCount = 0;
+        this.state.k5CordCount = 0;
+        this.state.k5WinderTotalPrice = null;
+        this.state.k5MotorTotalPrice = null;
+        this.state.k5RemoteTotalPrice = null;
+        this.state.k5ChargerTotalPrice = null;
+        this.state.k5CordTotalPrice = null;
     }
 
     getState() {
@@ -44,6 +58,8 @@ export class UIService {
         this.state.k4ActiveMode = null;
         this.state.chainInputValue = '';
         this.state.k4DualPrice = null;
+
+        this._initializeK5State();
     }
 
     setActiveCell(rowIndex, column) {
@@ -109,10 +125,6 @@ export class UIService {
         this.state.visibleColumns = columns;
     }
     
-    /**
-     * [NEW] Sets the active tab ID for the left panel.
-     * @param {string} tabId - e.g., 'k1-tab', 'k2-tab'.
-     */
     setActiveTab(tabId) {
         this.state.activeTabId = tabId;
     }
@@ -157,7 +169,7 @@ export class UIService {
         return this.state.lfModifiedRowIndexes.size > 0;
     }
 
-    // --- [NEW] K4 State Management ---
+    // --- K4 State Management ---
     setK4ActiveMode(mode) {
         this.state.k4ActiveMode = mode;
     }
@@ -165,20 +177,36 @@ export class UIService {
     setChainInputValue(value) {
         this.state.chainInputValue = String(value || '');
     }
-
-    appendChainInputValue(key) {
-        this.state.chainInputValue += key;
-    }
-
-    deleteLastChainInputChar() {
-        this.state.chainInputValue = this.state.chainInputValue.slice(0, -1);
-    }
-
+    
     clearChainInputValue() {
         this.state.chainInputValue = '';
     }
     
     setK4DualPrice(price) {
         this.state.k4DualPrice = price;
+    }
+
+    // --- K5 State Management ---
+    setK5ActiveMode(mode) {
+        this.state.k5ActiveMode = mode;
+    }
+    
+    setK5Count(accessory, count) {
+        if (count < 0) return;
+        switch(accessory) {
+            case 'remote': this.state.k5RemoteCount = count; break;
+            case 'charger': this.state.k5ChargerCount = count; break;
+            case 'cord': this.state.k5CordCount = count; break;
+        }
+    }
+
+    setK5TotalPrice(accessory, price) {
+        switch(accessory) {
+            case 'winder': this.state.k5WinderTotalPrice = price; break;
+            case 'motor': this.state.k5MotorTotalPrice = price; break;
+            case 'remote': this.state.k5RemoteTotalPrice = price; break;
+            case 'charger': this.state.k5ChargerTotalPrice = price; break;
+            case 'cord': this.state.k5CordTotalPrice = price; break;
+        }
     }
 }

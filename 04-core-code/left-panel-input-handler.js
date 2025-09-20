@@ -153,11 +153,33 @@ export class LeftPanelInputHandler {
     }
 
     _setupK5Inputs() {
-        const returnButton = document.getElementById('btn-return-form1');
-        if (returnButton) {
-            returnButton.addEventListener('click', () => {
-                this.eventAggregator.publish('userNavigatedToQuickQuoteView');
-            });
-        }
+        const setupK5ModeButton = (buttonId, mode) => {
+            const button = document.getElementById(buttonId);
+            if (button) {
+                button.addEventListener('click', () => {
+                    this.eventAggregator.publish('k5ModeChanged', { mode });
+                });
+            }
+        };
+        setupK5ModeButton('btn-k5-winder', 'winder');
+        setupK5ModeButton('btn-k5-motor', 'motor');
+        setupK5ModeButton('btn-k5-remote', 'remote');
+        setupK5ModeButton('btn-k5-charger', 'charger');
+        setupK5ModeButton('btn-k5-3m-cord', 'cord');
+
+        const setupK5CounterButton = (buttonId, accessory, direction) => {
+            const button = document.getElementById(buttonId);
+            if (button) {
+                button.addEventListener('click', () => {
+                    this.eventAggregator.publish('k5CounterChanged', { accessory, direction });
+                });
+            }
+        };
+        setupK5CounterButton('btn-k5-remote-add', 'remote', 'add');
+        setupK5CounterButton('btn-k5-remote-subtract', 'remote', 'subtract');
+        setupK5CounterButton('btn-k5-charger-add', 'charger', 'add');
+        setupK5CounterButton('btn-k5-charger-subtract', 'charger', 'subtract');
+        setupK5CounterButton('btn-k5-cord-add', 'cord', 'add');
+        setupK5CounterButton('btn-k5-cord-subtract', 'cord', 'subtract');
     }
 }
