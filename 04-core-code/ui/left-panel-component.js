@@ -55,6 +55,8 @@ export class LeftPanelComponent {
         this.k5CordSubtractBtn = document.getElementById('btn-k5-cord-subtract');
         this.k5CordCountDisplay = document.getElementById('k5-display-cord-count');
 
+        this.k5TotalDisplay = document.getElementById('k5-display-total'); // [NEW] Get total display element
+
         this.tabButtons = this.panelElement.querySelectorAll('.tab-button');
         this.tabContents = this.panelElement.querySelectorAll('.tab-content');
         
@@ -100,7 +102,8 @@ export class LeftPanelComponent {
             activeEditMode, locationInputValue, lfModifiedRowIndexes, 
             k4ActiveMode, k4DualPrice, targetCell, chainInputValue,
             k5ActiveMode, k5RemoteCount, k5ChargerCount, k5CordCount,
-            k5WinderTotalPrice, k5MotorTotalPrice, k5RemoteTotalPrice, k5ChargerTotalPrice, k5CordTotalPrice
+            k5WinderTotalPrice, k5MotorTotalPrice, k5RemoteTotalPrice, k5ChargerTotalPrice, k5CordTotalPrice,
+            k5GrandTotal // [NEW] Get grand total from state
         } = uiState;
         const { rollerBlindItems } = quoteData;
 
@@ -211,5 +214,10 @@ export class LeftPanelComponent {
         const cordBtnsDisabled = k5ActiveMode !== 'cord';
         if (this.k5CordAddBtn) this.k5CordAddBtn.disabled = cordBtnsDisabled;
         if (this.k5CordSubtractBtn) this.k5CordSubtractBtn.disabled = cordBtnsDisabled;
+
+        // [NEW] Render K5 Grand Total
+        if (this.k5TotalDisplay) {
+            this.k5TotalDisplay.value = formatPrice(k5GrandTotal);
+        }
     }
 }

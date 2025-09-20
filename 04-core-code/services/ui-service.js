@@ -38,6 +38,7 @@ export class UIService {
         this.state.k5RemoteTotalPrice = null;
         this.state.k5ChargerTotalPrice = null;
         this.state.k5CordTotalPrice = null;
+        this.state.k5GrandTotal = null; // [NEW] For the total display
     }
 
     getState() {
@@ -208,5 +209,9 @@ export class UIService {
             case 'charger': this.state.k5ChargerTotalPrice = price; break;
             case 'cord': this.state.k5CordTotalPrice = price; break;
         }
+    }
+
+    setK5GrandTotal(price) {
+        this.state.k5GrandTotal = price;
     }
 }

@@ -110,7 +110,7 @@ export class K5AccessoriesView {
                         { text: '取消', className: 'secondary', callback: () => {} }
                     ]
                 });
-                return;
+                return; // Prevent update until user confirms
             }
         }
         
@@ -136,37 +136,47 @@ export class K5AccessoriesView {
         const items = this.quoteService.getItems();
         const state = this.uiService.getState();
         const summaryData = {};
+        let grandTotal = 0;
 
         // Winder
         const winderPrice = this.calculationService.calculateWinderPrice(items);
         const winderCount = items.filter(item => item.winder === 'HD').length;
         this.uiService.setK5TotalPrice('winder', winderPrice);
         summaryData.winder = { count: winderCount, price: winderPrice };
+        grandTotal += winderPrice;
 
         // Motor
         const motorPrice = this.calculationService.calculateMotorPrice(items);
         const motorCount = items.filter(item => !!item.motor).length;
         this.uiService.setK5TotalPrice('motor', motorPrice);
         summaryData.motor = { count: motorCount, price: motorPrice };
+        grandTotal += motorPrice;
         
         // Remote
         const remoteCount = state.k5RemoteCount;
         const remotePrice = this.calculationService.calculateRemotePrice(remoteCount);
         this.uiService.setK5TotalPrice('remote', remotePrice);
         summaryData.remote = { type: 'standard', count: remoteCount, price: remotePrice };
+        grandTotal += remotePrice;
 
         // Charger
         const chargerCount = state.k5ChargerCount;
         const chargerPrice = this.calculationService.calculateChargerPrice(chargerCount);
         this.uiService.setK5TotalPrice('charger', chargerPrice);
         summaryData.charger = { count: chargerCount, price: chargerPrice };
+        grandTotal += chargerPrice;
 
         // Cord
         const cordCount = state.k5CordCount;
         const cordPrice = this.calculationService.calculateCordPrice(cordCount);
         this.uiService.setK5TotalPrice('cord', cordPrice);
         summaryData.cord3m = { count: cordCount, price: cordPrice };
+        grandTotal += cordPrice;
 
+        // Update the grand total in the UI state
+        this.uiService.setK5GrandTotal(grandTotal);
+
+        // Update the summary data in the core data state
         this.quoteService.updateAccessorySummary(summaryData);
     }
 
