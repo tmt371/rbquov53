@@ -4,6 +4,7 @@ export class ConfigManager {
     constructor(eventAggregator) {
         this.eventAggregator = eventAggregator;
         this.priceMatrices = null;
+        this.accessories = null; // [NEW] Add a property to store accessory prices
         this.isInitialized = false;
     }
 
@@ -11,7 +12,6 @@ export class ConfigManager {
         if (this.isInitialized) return;
 
         try {
-            // 我們依然使用之前確認過的、正確的檔案路徑
             const response = await fetch('./03-data-models/price-matrix-v1.0.json');
             
             if (!response.ok) {
@@ -19,6 +19,7 @@ export class ConfigManager {
             }
             const data = await response.json();
             this.priceMatrices = data.matrices;
+            this.accessories = data.accessories; // [NEW] Load and store the accessories object
             this.isInitialized = true;
             console.log("ConfigManager initialized and price matrices loaded successfully.");
 
@@ -29,7 +30,7 @@ export class ConfigManager {
     }
 
     /**
-     * [修改] 根據布料類型(BO, BO1, SN)直接獲取對應的價格矩陣
+     * [MODIFIED] Retrieves the price matrix for a given fabric type.
      * @param {string} fabricType - e.g., 'BO', 'BO1', 'SN'
      * @returns {object|null}
      */
@@ -38,10 +39,24 @@ export class ConfigManager {
             console.error("ConfigManager not initialized or matrices not loaded.");
             return null;
         }
-        
-        // [修改] 移除中間的映射層，直接使用 fabricType 作為 Key 來查找
-        // 程式碼從 `const matrixName = FABRIC_TYPE_TO_MATRIX_MAP[fabricType];`
-        // 簡化為直接使用 `fabricType`
         return this.priceMatrices[fabricType] || null;
+    }
+
+    /**
+     * [NEW] Retrieves the price for a specific accessory.
+     * @param {string} accessoryKey - The key of the accessory (e.g., 'winderHD', 'motorStandard').
+     * @returns {number|null} The price of the accessory, or null if not found.
+     */
+    getAccessoryPrice(accessoryKey) {
+        if (!this.isInitialized || !this.accessories) {
+            console.error("ConfigManager not initialized or accessories not loaded.");
+            return null;
+        }
+        const accessory = this.accessories[accessoryKey];
+        if (accessory && typeof accessory.price === 'number') {
+            return accessory.price;
+        }
+        console.error(`Accessory price for '${accessoryKey}' not found.`);
+        return null;
     }
 }
