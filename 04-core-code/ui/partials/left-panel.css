@@ -235,7 +235,6 @@
 .k5-grid {
     gap: 12px;
 }
-/* [FIX] Use Grid for the main buttons to ensure alignment */
 #k5-content .feature-buttons {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -290,27 +289,24 @@
     padding: 4px;
     background-color: #fff;
 }
-.k5-total-row {
-    margin-top: 10px;
-}
 .k5-total-box {
     grid-column: span 2;
     display: flex;
-    align-items: center;
-    gap: 10px;
+    flex-direction: column; /* [MODIFIED] Stack vertically */
+    gap: 4px;
 }
 .k5-total-label {
     font-weight: bold;
-    font-size: 1.1em;
+    font-size: 0.9em;
     color: #2c3e50;
-    flex-shrink: 0;
+    text-align: left;
 }
 .k5-total-display {
     font-size: 1.2em;
     font-weight: bold;
-    color: #ec4899; /* Pink color for emphasis */
+    color: #ec4899;
     text-align: right;
-    padding: 8px;
+    padding: 6px;
     background-color: #fff;
 }
 
