@@ -23,7 +23,7 @@ export class K5AccessoriesView {
 
         // --- Logic on EXITING a mode ---
         if (currentMode) {
-            this._calculateAndStore(currentMode);
+            this._recalculateAllK5Prices();
         }
 
         this.uiService.setK5ActiveMode(newMode);
@@ -33,7 +33,6 @@ export class K5AccessoriesView {
             const message = this._getHintMessage(newMode);
             this.eventAggregator.publish('showNotification', { message });
 
-            // Special logic for auto-setting counts
             const items = this.quoteService.getItems();
             const hasMotor = items.some(item => !!item.motor);
             if (hasMotor) {
@@ -96,7 +95,6 @@ export class K5AccessoriesView {
         let currentCount = counts[accessory];
         const newCount = direction === 'add' ? currentCount + 1 : Math.max(0, currentCount - 1);
 
-        // Special logic for reducing to zero
         if (newCount === 0) {
             const items = this.quoteService.getItems();
             const hasMotor = items.some(item => !!item.motor);
@@ -112,7 +110,7 @@ export class K5AccessoriesView {
                         { text: '取消', className: 'secondary', callback: () => {} }
                     ]
                 });
-                return; // Prevent update until user confirms
+                return;
             }
         }
         
@@ -134,44 +132,42 @@ export class K5AccessoriesView {
         this.publish();
     }
     
-    _calculateAndStore(mode) {
+    _recalculateAllK5Prices() {
         const items = this.quoteService.getItems();
         const state = this.uiService.getState();
-        let price = 0;
-        let count = 0;
+        const summaryData = {};
 
-        switch(mode) {
-            case 'winder':
-                price = this.calculationService.calculateWinderPrice(items);
-                count = items.filter(item => item.winder === 'HD').length;
-                this.uiService.setK5TotalPrice('winder', price);
-                this.quoteService.updateAccessorySummary({ winder: { count, price } });
-                break;
-            case 'motor':
-                price = this.calculationService.calculateMotorPrice(items);
-                count = items.filter(item => !!item.motor).length;
-                this.uiService.setK5TotalPrice('motor', price);
-                this.quoteService.updateAccessorySummary({ motor: { count, price } });
-                break;
-            case 'remote':
-                count = state.k5RemoteCount;
-                price = this.calculationService.calculateRemotePrice(count);
-                this.uiService.setK5TotalPrice('remote', price);
-                this.quoteService.updateAccessorySummary({ remote: { type: 'standard', count, price } });
-                break;
-            case 'charger':
-                count = state.k5ChargerCount;
-                price = this.calculationService.calculateChargerPrice(count);
-                this.uiService.setK5TotalPrice('charger', price);
-                this.quoteService.updateAccessorySummary({ charger: { count, price } });
-                break;
-            case 'cord':
-                count = state.k5CordCount;
-                price = this.calculationService.calculateCordPrice(count);
-                this.uiService.setK5TotalPrice('cord', price);
-                this.quoteService.updateAccessorySummary({ cord3m: { count, price } });
-                break;
-        }
+        // Winder
+        const winderPrice = this.calculationService.calculateWinderPrice(items);
+        const winderCount = items.filter(item => item.winder === 'HD').length;
+        this.uiService.setK5TotalPrice('winder', winderPrice);
+        summaryData.winder = { count: winderCount, price: winderPrice };
+
+        // Motor
+        const motorPrice = this.calculationService.calculateMotorPrice(items);
+        const motorCount = items.filter(item => !!item.motor).length;
+        this.uiService.setK5TotalPrice('motor', motorPrice);
+        summaryData.motor = { count: motorCount, price: motorPrice };
+        
+        // Remote
+        const remoteCount = state.k5RemoteCount;
+        const remotePrice = this.calculationService.calculateRemotePrice(remoteCount);
+        this.uiService.setK5TotalPrice('remote', remotePrice);
+        summaryData.remote = { type: 'standard', count: remoteCount, price: remotePrice };
+
+        // Charger
+        const chargerCount = state.k5ChargerCount;
+        const chargerPrice = this.calculationService.calculateChargerPrice(chargerCount);
+        this.uiService.setK5TotalPrice('charger', chargerPrice);
+        summaryData.charger = { count: chargerCount, price: chargerPrice };
+
+        // Cord
+        const cordCount = state.k5CordCount;
+        const cordPrice = this.calculationService.calculateCordPrice(cordCount);
+        this.uiService.setK5TotalPrice('cord', cordPrice);
+        summaryData.cord3m = { count: cordCount, price: cordPrice };
+
+        this.quoteService.updateAccessorySummary(summaryData);
     }
 
     _getHintMessage(mode) {
