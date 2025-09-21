@@ -10,9 +10,10 @@ export class DetailConfigView {
         calculationService, 
         eventAggregator, 
         publishStateChangeCallback,
-        // Injected views with semantic names
+        // [REFACTORED] Injected views with semantic names
         dualChainView,
         driveAccessoriesView,
+        // Sub-views are injected here
         k1LocationView,
         k2FabricView,
         k3OptionsView,
@@ -23,32 +24,20 @@ export class DetailConfigView {
         this.eventAggregator = eventAggregator;
         this.publish = publishStateChangeCallback;
 
-        // Store instances of sub-views
+        // Store instances of sub-views with semantic names
         this.k1View = k1LocationView;
         this.k2View = k2FabricView;
         this.k3View = k3OptionsView;
-        this.dualChainView = dualChainView;
-        this.driveAccessoriesView = driveAccessoriesView;
+        this.dualChainView = dualChainView; // Was k4View
+        this.driveAccessoriesView = driveAccessoriesView; // Was k5View
 
         console.log("DetailConfigView Refactored as a Manager View.");
-    }
-
-    _updateK5AccessoriesSum() {
-        const state = this.uiService.getState();
-        const prices = {
-            dual: state.k4DualPrice,
-            winder: state.k5WinderTotalPrice,
-            motor: state.k5MotorTotalPrice,
-            remote: state.k5RemoteTotalPrice,
-            charger: state.k5ChargerTotalPrice
-        };
-        const sum = this.calculationService.calculateAccessoriesSum(prices);
-        this.uiService.setAccessoriesSum(sum);
     }
 
     activateTab(tabId) {
         this.uiService.setActiveTab(tabId);
 
+        // [REFACTORED] Swapped the activation logic for K4 and K5
         switch (tabId) {
             case 'k1-tab':
                 this.k1View.activate();
@@ -60,15 +49,10 @@ export class DetailConfigView {
             case 'k3-tab':
                 this.k3View.activate();
                 break;
-            case 'k4-tab': 
+            case 'k4-tab': // K4 tab now activates the drive/accessories view
                 this.driveAccessoriesView.activate();
                 break;
-            case 'k5-tab': 
-                // First, trigger a silent recalculation of K4 prices to ensure data is fresh
-                this.driveAccessoriesView._recalculateAllK5Prices();
-                // Then, calculate the sum for the K5 display
-                this._updateK5AccessoriesSum();
-                // Finally, activate the K5 (dual/chain) view
+            case 'k5-tab': // K5 tab now activates the dual/chain view
                 this.dualChainView.activate();
                 break;
             default:
@@ -77,20 +61,61 @@ export class DetailConfigView {
         this.publish();
     }
     
-    // ... (Event handlers for K1, K2, K3 remain the same) ...
+    // --- Event Handlers that delegate to sub-views ---
 
+    handleFocusModeRequest({ column }) {
+        if (column === 'location') {
+            this.k1View.handleFocusModeRequest();
+            return;
+        }
+        if (column === 'fabric') {
+            this.k2View.handleFocusModeRequest();
+            return;
+        }
+    }
+    
+    handleLocationInputEnter({ value }) {
+        this.k1View.handleLocationInputEnter({ value });
+    }
+
+    handlePanelInputBlur({ type, field, value }) {
+        this.k2View.handlePanelInputBlur({ type, field, value });
+    }
+
+    handlePanelInputEnter() {
+        this.k2View.handlePanelInputEnter();
+    }
+
+    handleSequenceCellClick({ rowIndex }) {
+        const { activeEditMode } = this.uiService.getState();
+        if (activeEditMode === 'K2_LF_SELECT' || activeEditMode === 'K2_LF_DELETE_SELECT') {
+            this.k2View.handleSequenceCellClick({ rowIndex });
+        }
+    }
+
+    handleLFEditRequest() {
+        this.k2View.handleLFEditRequest();
+    }
+
+    handleLFDeleteRequest() {
+        this.k2View.handleLFDeleteRequest();
+    }
+    
+    handleToggleK3EditMode() {
+        this.k3View.handleToggleK3EditMode();
+    }
+
+    handleBatchCycle({ column }) {
+        this.k3View.handleBatchCycle({ column });
+    }
+
+    // [REFACTORED] Renamed handlers and re-wired delegation
     handleDualChainModeChange({ mode }) {
         this.dualChainView.handleModeChange({ mode });
-        // After interaction, recalculate the sum
-        this._updateK5AccessoriesSum();
-        this.publish();
     }
 
     handleChainEnterPressed({ value }) {
         this.dualChainView.handleChainEnterPressed({ value });
-        // After interaction, recalculate the sum
-        this._updateK5AccessoriesSum();
-        this.publish();
     }
 
     handleDriveModeChange({ mode }) {
@@ -104,6 +129,7 @@ export class DetailConfigView {
     handleTableCellClick({ rowIndex, column }) {
         const { activeEditMode, k4ActiveMode, k5ActiveMode } = this.uiService.getState();
         
+        // Note: k4ActiveMode now corresponds to dualChainView, k5ActiveMode to driveAccessoriesView
         if (k5ActiveMode) {
             this.driveAccessoriesView.handleTableCellClick({ rowIndex, column });
             return;
@@ -121,10 +147,11 @@ export class DetailConfigView {
 
         if (k4ActiveMode) {
             this.dualChainView.handleTableCellClick({ rowIndex, column });
-            // After interaction, recalculate the sum
-            this._updateK5AccessoriesSum();
-            this.publish();
             return;
         }
+    }
+    
+    initializePanelState() {
+        this.k2View._updatePanelInputsState();
     }
 }
