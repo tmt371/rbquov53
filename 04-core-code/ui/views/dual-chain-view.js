@@ -94,10 +94,13 @@ export class DualChainView {
             this.uiService.setChainInputValue(item.chain || '');
             this.publish();
 
+            // [FIX] Ensure the input box is focused correctly after state update
             setTimeout(() => {
                 const inputBox = document.getElementById('k4-input-display');
-                inputBox?.focus();
-                inputBox?.select();
+                if (inputBox) {
+                    inputBox.focus();
+                    inputBox.select();
+                }
             }, 50); 
         }
     }
@@ -106,7 +109,8 @@ export class DualChainView {
      * This method is called by the main DetailConfigView.
      */
     activate() {
+        // This view is now used inside K5, but the columns are still dual/chain
         this.uiService.setVisibleColumns(['sequence', 'fabricTypeDisplay', 'location', 'dual', 'chain']);
-        this.publish();
+        // Do not publish here, DetailConfigView will handle it.
     }
 }
