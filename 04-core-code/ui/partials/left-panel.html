@@ -84,6 +84,7 @@
         </div>
         <div id="k4-content" class="tab-content">
             <div class="feature-grid k5-grid">
+                <!-- Row 1: Main Buttons -->
                 <div class="feature-group">
                     <div class="feature-buttons">
                         <button id="btn-k5-winder" class="feature-button">Winder</button>
@@ -93,6 +94,7 @@
                         <button id="btn-k5-3m-cord" class="feature-button">3MCord</button>
                     </div>
                 </div>
+                <!-- Row 2: Display Boxes -->
                 <div class="feature-group k5-display-row">
                     <input type="text" id="k5-display-winder" class="panel-input k5-display-box" placeholder="HD Total..." readonly>
                     <input type="text" id="k5-display-motor" class="panel-input k5-display-box" placeholder="Motor Total..." readonly>
@@ -100,6 +102,7 @@
                     <input type="text" id="k5-display-charger" class="panel-input k5-display-box" placeholder="Charger Total..." readonly>
                     <input type="text" id="k5-display-cord" class="panel-input k5-display-box" placeholder="Cord Total..." readonly>
                 </div>
+                <!-- Row 3: Total and Counters -->
                 <div class="feature-group k5-combined-row">
                     <span class="k5-total-label">Total</span>
                     <input type="text" id="k5-display-total" class="panel-input k5-total-display" readonly>
@@ -122,21 +125,45 @@
             </div>
         </div>
         <div id="k5-content" class="tab-content">
-            <div class="feature-grid">
-                <div class="feature-group k4-top-row">
-                    <input type="text" id="k4-input-display" class="panel-input k4-display-box" placeholder="Chain length..." disabled>
-                </div>
-                <div class="feature-group">
-                    <div class="feature-buttons">
-                        <button id="btn-k4-dual" class="feature-button">Dual</button>
-                        <button id="btn-k4-chain" class="feature-button">Chain</button>
+            <div class="k5-new-layout-container">
+                <!-- Row 1 -->
+                <div class="k5-layout-row paired-row">
+                    <div class="k5-pair-group">
+                        <button id="btn-k4-dual" class="grid-item k5-button">Dual</button>
+                        <input type="text" id="k4-dual-price-display" class="grid-item k5-display" readonly>
+                    </div>
+                    <div class="k5-pair-group">
+                        <button id="btn-k4-chain" class="grid-item k5-button">Chain</button>
+                        <input type="text" id="k4-input-display" class="grid-item k5-display" placeholder="Length..." readonly>
                     </div>
                 </div>
-                <div class="feature-group k4-bottom-row">
-                    <div id="k4-dual-price-display" class="k4-price-box">
-                        <span class="price-label">Dual Total:</span>
-                        <span class="price-value"></span>
+                <!-- Row 2 -->
+                <div class="k5-layout-row paired-row">
+                    <div class="k5-pair-group">
+                        <div class="grid-item k5-caption">Winder</div>
+                        <input type="text" id="k5-winder-readonly-display" class="grid-item k5-display" readonly>
                     </div>
+                    <div class="k5-pair-group">
+                        <div class="grid-item k5-caption">Motor</div>
+                        <input type="text" id="k5-motor-readonly-display" class="grid-item k5-display" readonly>
+                    </div>
+                </div>
+                <!-- Row 3 -->
+                <div class="k5-layout-row paired-row">
+                    <div class="k5-pair-group">
+                        <div class="grid-item k5-caption">Remote</div>
+                        <input type="text" id="k5-remote-readonly-display" class="grid-item k5-display" readonly>
+                    </div>
+                    <div class="k5-pair-group">
+                        <div class="grid-item k5-caption">Charger</div>
+                        <input type="text" id="k5-charger-readonly-display" class="grid-item k5-display" readonly>
+                    </div>
+                </div>
+                <!-- Row 4 -->
+                <div class="k5-layout-row total-row-new">
+                    <!-- Spacers are no longer needed with this new structure -->
+                    <div class="grid-item k5-caption" id="total-caption">Total</div>
+                    <input type="text" id="accessories-sum-display" class="grid-item k5-display" readonly>
                 </div>
             </div>
         </div>
