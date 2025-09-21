@@ -246,6 +246,7 @@
     padding: 8px 4px;
     font-size: 0.8em;
     text-align: center;
+    height: 32px; /* <-- [新增] 固定主要按鈕高度 */
 }
 .k5-display-row {
     display: grid;
@@ -259,6 +260,7 @@
     background-color: #e9ecef;
     font-size: 0.9em;
     padding: 6px;
+    height: 32px; /* <-- [新增] 固定價格顯示框高度 */
 }
 .k5-combined-row {
     display: grid;
@@ -281,6 +283,7 @@
     text-align: right;
     padding: 6px;
     background-color: #fff;
+    height: 32px; /* <-- [新增] 固定總價框高度 */
 }
 #k5-counter-remote {
     grid-column: 3 / 4; /* Place in column 3 */
@@ -305,6 +308,7 @@
     padding: 2px 0;
     cursor: pointer;
     border-radius: 4px;
+    height: 24px; /* <-- [新增] 固定計數器按鈕高度 */
 }
 .k5-counter-btn:active {
     background-color: #e5e7eb;
@@ -320,6 +324,7 @@
     font-size: 1.1em;
     padding: 4px;
     background-color: #fff;
+    height: 24px; /* <-- [新增] 固定計數器顯示框高度 */
 }
 
 /* --- K5 Feature Styles for Main Table --- */
