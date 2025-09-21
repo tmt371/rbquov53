@@ -3,21 +3,21 @@
 /**
  * @fileoverview A dedicated sub-view for handling all logic related to the Dual/Chain tab.
  */
-export class K4AccessoriesView {
+export class DualChainView {
     constructor({ quoteService, uiService, calculationService, eventAggregator, publishStateChangeCallback }) {
         this.quoteService = quoteService;
         this.uiService = uiService;
         this.calculationService = calculationService;
         this.eventAggregator = eventAggregator;
         this.publish = publishStateChangeCallback;
-        console.log("K4AccessoriesView (soon DualChainView) Initialized.");
+        console.log("DualChainView Initialized.");
     }
 
     /**
-     * Handles the toggling of K4 modes (dual, chain).
+     * Handles the toggling of modes (dual, chain).
      * @param {object} data - The event data containing the mode.
      */
-    handleK4ModeChange({ mode }) {
+    handleModeChange({ mode }) {
         const currentMode = this.uiService.getState().k4ActiveMode;
 
         if (currentMode === 'dual') {
@@ -53,7 +53,7 @@ export class K4AccessoriesView {
      * Handles the Enter key press in the chain input box.
      * @param {object} data - The event data containing the value.
      */
-    handleK4ChainEnterPressed({ value }) {
+    handleChainEnterPressed({ value }) {
         const { targetCell: currentTarget } = this.uiService.getState();
         if (!currentTarget) return;
 
@@ -75,7 +75,7 @@ export class K4AccessoriesView {
     }
 
     /**
-     * Handles clicks on table cells when a K4 mode is active.
+     * Handles clicks on table cells when a mode is active.
      * @param {object} data - The event data { rowIndex, column }.
      */
     handleTableCellClick({ rowIndex, column }) {
@@ -103,7 +103,7 @@ export class K4AccessoriesView {
     }
     
     /**
-     * This method is called by the main DetailConfigView when the K4 tab becomes active.
+     * This method is called by the main DetailConfigView.
      */
     activate() {
         this.uiService.setVisibleColumns(['sequence', 'fabricTypeDisplay', 'location', 'dual', 'chain']);

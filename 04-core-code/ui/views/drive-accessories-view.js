@@ -3,21 +3,21 @@
 /**
  * @fileoverview A dedicated sub-view for handling all logic related to the Drive/Accessories tab.
  */
-export class K5AccessoriesView {
+export class DriveAccessoriesView {
     constructor({ quoteService, uiService, calculationService, eventAggregator, publishStateChangeCallback }) {
         this.quoteService = quoteService;
         this.uiService = uiService;
         this.calculationService = calculationService;
         this.eventAggregator = eventAggregator;
         this.publish = publishStateChangeCallback;
-        console.log("K5AccessoriesView (soon DriveAccessoriesView) Initialized.");
+        console.log("DriveAccessoriesView Initialized.");
     }
 
     activate() {
         this.uiService.setVisibleColumns(['sequence', 'fabricTypeDisplay', 'location', 'winder', 'motor']);
     }
 
-    handleK5ModeChange({ mode }) {
+    handleModeChange({ mode }) {
         const currentMode = this.uiService.getState().k5ActiveMode;
         const newMode = currentMode === mode ? null : mode;
 
@@ -86,7 +86,7 @@ export class K5AccessoriesView {
         }
     }
     
-    handleK5CounterChanged({ accessory, direction }) {
+    handleCounterChange({ accessory, direction }) {
         const state = this.uiService.getState();
         const counts = {
             remote: state.k5RemoteCount,
@@ -175,10 +175,7 @@ export class K5AccessoriesView {
         summaryData.cord3m = { count: cordCount, price: cordPrice };
         grandTotal += cordPrice;
 
-        // Update the grand total in the UI state
         this.uiService.setK5GrandTotal(grandTotal);
-
-        // Update the summary data in the core data state
         this.quoteService.updateAccessorySummary(summaryData);
     }
 
