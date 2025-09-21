@@ -245,8 +245,7 @@
     font-size: 0.8em;
     text-align: center;
 }
-.k5-display-row,
-.k5-counter-row {
+.k5-display-row {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 8px;
@@ -258,6 +257,32 @@
     background-color: #e9ecef;
     font-size: 0.9em;
     padding: 6px;
+}
+.k5-combined-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    align-items: flex-start; /* Align to the top */
+}
+.k5-total-box {
+    grid-column: span 2;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.k5-total-label {
+    font-weight: bold;
+    font-size: 0.9em;
+    color: #2c3e50;
+    text-align: left;
+}
+.k5-total-display {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #ec4899;
+    text-align: right;
+    padding: 6px;
+    background-color: #fff;
 }
 .k5-counter-group {
     display: flex;
@@ -289,27 +314,6 @@
     padding: 4px;
     background-color: #fff;
 }
-.k5-total-box {
-    grid-column: span 2;
-    display: flex;
-    flex-direction: column; /* [MODIFIED] Stack vertically */
-    gap: 4px;
-}
-.k5-total-label {
-    font-weight: bold;
-    font-size: 0.9em;
-    color: #2c3e50;
-    text-align: left;
-}
-.k5-total-display {
-    font-size: 1.2em;
-    font-weight: bold;
-    color: #ec4899;
-    text-align: right;
-    padding: 6px;
-    background-color: #fff;
-}
-
 
 /* --- K5 Feature Styles for Main Table --- */
 .results-table td.winder-cell-active,
