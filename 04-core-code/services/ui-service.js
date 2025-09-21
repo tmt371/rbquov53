@@ -38,7 +38,8 @@ export class UIService {
         this.state.k5RemoteTotalPrice = null;
         this.state.k5ChargerTotalPrice = null;
         this.state.k5CordTotalPrice = null;
-        this.state.k5GrandTotal = null; // [NEW] For the total display
+        this.state.k5GrandTotal = null;
+        this.state.accessoriesSum = null;
     }
 
     getState() {
@@ -213,5 +214,9 @@ export class UIService {
 
     setK5GrandTotal(price) {
         this.state.k5GrandTotal = price;
+    }
+
+    setAccessoriesSum(price) {
+        this.state.accessoriesSum = price;
     }
 }
