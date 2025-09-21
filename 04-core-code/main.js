@@ -20,8 +20,9 @@ import { DetailConfigView } from './ui/views/detail-config-view.js';
 import { K1LocationView } from './ui/views/k1-location-view.js';
 import { K2FabricView } from './ui/views/k2-fabric-view.js';
 import { K3OptionsView } from './ui/views/k3-options-view.js';
-import { K4AccessoriesView } from './ui/views/k4-accessories-view.js';
-import { K5AccessoriesView } from './ui/views/k5-accessories-view.js';
+// [REFACTORED] Import views from their new, semantic file names and with new class names
+import { DualChainView } from './ui/views/dual-chain-view.js';
+import { DriveAccessoriesView } from './ui/views/drive-accessories-view.js';
 
 
 const AUTOSAVE_STORAGE_KEY = 'quoteAutoSaveData';
@@ -99,8 +100,9 @@ class App {
             uiService,
             publishStateChangeCallback
         });
-
-        const k4AccessoriesView = new K4AccessoriesView({
+        
+        // [REFACTORED] Instantiate views with new class names and semantic variable names
+        const dualChainView = new DualChainView({
             quoteService,
             uiService,
             calculationService,
@@ -108,7 +110,7 @@ class App {
             publishStateChangeCallback
         });
 
-        const k5AccessoriesView = new K5AccessoriesView({
+        const driveAccessoriesView = new DriveAccessoriesView({
             quoteService,
             uiService,
             calculationService,
@@ -125,8 +127,9 @@ class App {
             k1LocationView: k1LocationView,
             k2FabricView: k2FabricView,
             k3OptionsView: k3OptionsView,
-            k4AccessoriesView: k4AccessoriesView,
-            k5AccessoriesView: k5AccessoriesView
+            // [REFACTORED] Inject instances with new semantic names
+            dualChainView: dualChainView,
+            driveAccessoriesView: driveAccessoriesView
         });
         
         this.appController = new AppController({

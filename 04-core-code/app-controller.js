@@ -78,10 +78,12 @@ export class AppController {
         this.eventAggregator.subscribe('userRequestedLFDeleteMode', () => delegate('handleLFDeleteRequest'));
         this.eventAggregator.subscribe('userToggledK3EditMode', () => delegate('handleToggleK3EditMode'));
         this.eventAggregator.subscribe('userRequestedBatchCycle', (data) => delegate('handleBatchCycle', data));
-        this.eventAggregator.subscribe('k4ModeChanged', (data) => delegate('handleK4ModeChange', data));
-        this.eventAggregator.subscribe('k4ChainEnterPressed', (data) => delegate('handleK4ChainEnterPressed', data));
-        this.eventAggregator.subscribe('k5ModeChanged', (data) => delegate('handleK5ModeChange', data));
-        this.eventAggregator.subscribe('k5CounterChanged', (data) => delegate('handleK5CounterChanged', data));
+        
+        // [REFACTORED] Renamed events for semantic clarity
+        this.eventAggregator.subscribe('dualChainModeChanged', (data) => delegate('handleDualChainModeChange', data));
+        this.eventAggregator.subscribe('chainEnterPressed', (data) => delegate('handleChainEnterPressed', data));
+        this.eventAggregator.subscribe('driveModeChanged', (data) => delegate('handleDriveModeChange', data));
+        this.eventAggregator.subscribe('accessoryCounterChanged', (data) => delegate('handleAccessoryCounterChange', data));
     }
 
     _subscribeGlobalEvents() {

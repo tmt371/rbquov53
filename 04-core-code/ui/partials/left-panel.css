@@ -61,16 +61,15 @@
 #k1-tab.active { background-color: var(--k1-bg-color); border-color: var(--tab-active-color); color: var(--tab-active-color); }
 #k2-tab.active { background-color: var(--k2-bg-color); border-color: var(--tab-active-color); color: var(--tab-active-color);}
 #k3-tab.active { background-color: var(--k3-bg-color); border-color: var(--tab-active-color); color: #2c3e50; }
-#k4-tab.active { background-color: var(--k4-bg-color); border-color: var(--tab-active-color); color: #2c3e50; }
-#k5-tab.active { background-color: var(--k5-bg-color); border-color: var(--tab-active-color); color: #2c3e50; }
+/* [SWAPPED] K4 and K5 colors are swapped to match their new content */
+#k4-tab.active { background-color: var(--k5-bg-color); border-color: var(--tab-active-color); color: #2c3e50; }
+#k5-tab.active { background-color: var(--k4-bg-color); border-color: var(--tab-active-color); color: #2c3e50; }
 .tab-content-container { flex-grow: 1; padding: 15px; overflow-y: auto; }
 .tab-content { display: none; }
 .tab-content.active { display: block; }
 #k1-content { background-color: var(--k1-bg-color); } #k2-content { background-color: var(--k2-bg-color); }
 #k3-content { background-color: var(--k3-bg-color); } #k4-content { background-color: var(--k4-bg-color); }
-#k5-content { background-color: var(--k5-bg-color); 
-    font-size: 80%;
-}
+#k5-content { background-color: var(--k5-bg-color); }
 
 /* --- Left Panel Feature Styles --- */
 .feature-grid {
@@ -246,7 +245,6 @@
     padding: 8px 4px;
     font-size: 0.8em;
     text-align: center;
-    height: 32px; /* <-- [新增] 固定主要按鈕高度 */
 }
 .k5-display-row {
     display: grid;
@@ -260,7 +258,6 @@
     background-color: #e9ecef;
     font-size: 0.9em;
     padding: 6px;
-    height: 32px; /* <-- [新增] 固定價格顯示框高度 */
 }
 .k5-combined-row {
     display: grid;
@@ -283,7 +280,6 @@
     text-align: right;
     padding: 6px;
     background-color: #fff;
-    height: 32px; /* <-- [新增] 固定總價框高度 */
 }
 #k5-counter-remote {
     grid-column: 3 / 4; /* Place in column 3 */
@@ -308,7 +304,6 @@
     padding: 2px 0;
     cursor: pointer;
     border-radius: 4px;
-    height: 24px; /* <-- [新增] 固定計數器按鈕高度 */
 }
 .k5-counter-btn:active {
     background-color: #e5e7eb;
@@ -324,7 +319,6 @@
     font-size: 1.1em;
     padding: 4px;
     background-color: #fff;
-    height: 24px; /* <-- [新增] 固定計數器顯示框高度 */
 }
 
 /* --- K5 Feature Styles for Main Table --- */

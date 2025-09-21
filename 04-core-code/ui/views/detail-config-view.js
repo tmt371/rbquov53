@@ -10,12 +10,13 @@ export class DetailConfigView {
         calculationService, 
         eventAggregator, 
         publishStateChangeCallback,
+        // [REFACTORED] Injected views with semantic names
+        dualChainView,
+        driveAccessoriesView,
         // Sub-views are injected here
         k1LocationView,
         k2FabricView,
         k3OptionsView,
-        k4AccessoriesView,
-        k5AccessoriesView
     }) {
         this.quoteService = quoteService;
         this.uiService = uiService;
@@ -23,21 +24,20 @@ export class DetailConfigView {
         this.eventAggregator = eventAggregator;
         this.publish = publishStateChangeCallback;
 
-        // Store instances of sub-views
+        // Store instances of sub-views with semantic names
         this.k1View = k1LocationView;
         this.k2View = k2FabricView;
         this.k3View = k3OptionsView;
-        this.k4View = k4AccessoriesView;
-        this.k5View = k5AccessoriesView;
+        this.dualChainView = dualChainView; // Was k4View
+        this.driveAccessoriesView = driveAccessoriesView; // Was k5View
 
         console.log("DetailConfigView Refactored as a Manager View.");
     }
 
-    // --- Event Handlers that need to delegate to sub-views ---
-
     activateTab(tabId) {
         this.uiService.setActiveTab(tabId);
 
+        // [REFACTORED] Swapped the activation logic for K4 and K5
         switch (tabId) {
             case 'k1-tab':
                 this.k1View.activate();
@@ -49,11 +49,11 @@ export class DetailConfigView {
             case 'k3-tab':
                 this.k3View.activate();
                 break;
-            case 'k4-tab':
-                this.k4View.activate();
+            case 'k4-tab': // K4 tab now activates the drive/accessories view
+                this.driveAccessoriesView.activate();
                 break;
-            case 'k5-tab':
-                this.k5View.activate();
+            case 'k5-tab': // K5 tab now activates the dual/chain view
+                this.dualChainView.activate();
                 break;
             default:
                 break;
@@ -61,6 +61,8 @@ export class DetailConfigView {
         this.publish();
     }
     
+    // --- Event Handlers that delegate to sub-views ---
+
     handleFocusModeRequest({ column }) {
         if (column === 'location') {
             this.k1View.handleFocusModeRequest();
@@ -107,27 +109,29 @@ export class DetailConfigView {
         this.k3View.handleBatchCycle({ column });
     }
 
-    handleK4ModeChange({ mode }) {
-        this.k4View.handleK4ModeChange({ mode });
+    // [REFACTORED] Renamed handlers and re-wired delegation
+    handleDualChainModeChange({ mode }) {
+        this.dualChainView.handleModeChange({ mode });
     }
 
-    handleK4ChainEnterPressed({ value }) {
-        this.k4View.handleK4ChainEnterPressed({ value });
+    handleChainEnterPressed({ value }) {
+        this.dualChainView.handleChainEnterPressed({ value });
     }
 
-    handleK5ModeChange({ mode }) {
-        this.k5View.handleK5ModeChange({ mode });
+    handleDriveModeChange({ mode }) {
+        this.driveAccessoriesView.handleModeChange({ mode });
     }
 
-    handleK5CounterChanged({ accessory, direction }) {
-        this.k5View.handleK5CounterChanged({ accessory, direction });
+    handleAccessoryCounterChange({ accessory, direction }) {
+        this.driveAccessoriesView.handleCounterChange({ accessory, direction });
     }
 
     handleTableCellClick({ rowIndex, column }) {
         const { activeEditMode, k4ActiveMode, k5ActiveMode } = this.uiService.getState();
         
+        // Note: k4ActiveMode now corresponds to dualChainView, k5ActiveMode to driveAccessoriesView
         if (k5ActiveMode) {
-            this.k5View.handleTableCellClick({ rowIndex, column });
+            this.driveAccessoriesView.handleTableCellClick({ rowIndex, column });
             return;
         }
 
@@ -142,7 +146,7 @@ export class DetailConfigView {
         }
 
         if (k4ActiveMode) {
-            this.k4View.handleTableCellClick({ rowIndex, column });
+            this.dualChainView.handleTableCellClick({ rowIndex, column });
             return;
         }
     }

@@ -132,7 +132,7 @@ export class LeftPanelInputHandler {
             const button = document.getElementById(buttonId);
             if (button) {
                 button.addEventListener('click', () => {
-                    this.eventAggregator.publish('k4ModeChanged', { mode });
+                    this.eventAggregator.publish('dualChainModeChanged', { mode });
                 });
             }
         };
@@ -144,7 +144,7 @@ export class LeftPanelInputHandler {
             k4Input.addEventListener('keydown', (event) => {
                 if (event.key === 'Enter') {
                     event.preventDefault();
-                    this.eventAggregator.publish('k4ChainEnterPressed', {
+                    this.eventAggregator.publish('chainEnterPressed', {
                         value: event.target.value
                     });
                 }
@@ -157,7 +157,7 @@ export class LeftPanelInputHandler {
             const button = document.getElementById(buttonId);
             if (button) {
                 button.addEventListener('click', () => {
-                    this.eventAggregator.publish('k5ModeChanged', { mode });
+                    this.eventAggregator.publish('driveModeChanged', { mode });
                 });
             }
         };
@@ -171,7 +171,7 @@ export class LeftPanelInputHandler {
             const button = document.getElementById(buttonId);
             if (button) {
                 button.addEventListener('click', () => {
-                    this.eventAggregator.publish('k5CounterChanged', { accessory, direction });
+                    this.eventAggregator.publish('accessoryCounterChanged', { accessory, direction });
                 });
             }
         };
