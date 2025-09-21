@@ -68,7 +68,9 @@
 .tab-content.active { display: block; }
 #k1-content { background-color: var(--k1-bg-color); } #k2-content { background-color: var(--k2-bg-color); }
 #k3-content { background-color: var(--k3-bg-color); } #k4-content { background-color: var(--k4-bg-color); }
-#k5-content { background-color: var(--k5-bg-color); }
+#k5-content { background-color: var(--k5-bg-color); 
+    font-size: 90%;
+}
 
 /* --- Left Panel Feature Styles --- */
 .feature-grid {
