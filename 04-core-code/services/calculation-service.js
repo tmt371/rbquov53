@@ -71,7 +71,7 @@ export class CalculationService {
         return totalPrice;
     }
 
-    // --- K5 Accessory Calculation Methods ---
+    // --- K4 (Drive/Acc.) Calculation Methods ---
 
     calculateWinderPrice(items) {
         const count = items.filter(item => item.winder === 'HD').length;
@@ -98,5 +98,16 @@ export class CalculationService {
     calculateCordPrice(count) {
         const pricePerUnit = this.configManager.getAccessoryPrice('cord3m');
         return count * pricePerUnit;
+    }
+
+    // --- K5 (Summary) Calculation Method ---
+    calculateAccessoriesSum(prices) {
+        let total = 0;
+        for (const key in prices) {
+            if (typeof prices[key] === 'number') {
+                total += prices[key];
+            }
+        }
+        return total;
     }
 }
