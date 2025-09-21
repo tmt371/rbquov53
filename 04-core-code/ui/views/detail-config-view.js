@@ -41,7 +41,6 @@ export class DetailConfigView {
             motor: state.k5MotorTotalPrice,
             remote: state.k5RemoteTotalPrice,
             charger: state.k5ChargerTotalPrice
-            // Note: cord is not part of this sum as per the new design
         };
         const sum = this.calculationService.calculateAccessoriesSum(prices);
         this.uiService.setAccessoriesSum(sum);
@@ -56,8 +55,6 @@ export class DetailConfigView {
                 break;
             case 'k2-tab':
                 this.k2View.activate();
-                // [FIX] This was a source of bugs, state should be managed by the view itself upon activation
-                // this.k2View._updatePanelInputsState();
                 break;
             case 'k3-tab':
                 this.k3View.activate();
@@ -66,11 +63,8 @@ export class DetailConfigView {
                 this.driveAccessoriesView.activate();
                 break;
             case 'k5-tab': 
-                // Silently recalculate K4 prices to ensure data is fresh for K5 display
                 this.driveAccessoriesView._recalculateAllK5Prices();
-                // Then, calculate the sum for the K5 display
                 this._updateK5AccessoriesSum();
-                // Finally, activate the K5 (dual/chain) view
                 this.dualChainView.activate();
                 break;
             default:
@@ -128,14 +122,12 @@ export class DetailConfigView {
 
     handleDualChainModeChange({ mode }) {
         this.dualChainView.handleModeChange({ mode });
-        // After interaction, recalculate the sum
         this._updateK5AccessoriesSum();
         this.publish();
     }
 
     handleChainEnterPressed({ value }) {
         this.dualChainView.handleChainEnterPressed({ value });
-        // After interaction, recalculate the sum
         this._updateK5AccessoriesSum();
         this.publish();
     }
