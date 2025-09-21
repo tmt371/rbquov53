@@ -327,3 +327,73 @@
     background-color: #fffacd; /* Light Yellow */
     font-weight: bold;
 }
+
+/* --- [ADDED] New K5 Panel Styles (15th Edit Session) --- */
+#k5-content {
+    font-size: 80%;
+}
+.k5-new-layout-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.k5-layout-row {
+    display: grid;
+    gap: 8px;
+}
+.paired-row {
+    grid-template-columns: 1fr 1fr;
+}
+.total-row {
+    grid-template-columns: repeat(4, 1fr);
+}
+.k5-pair-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    border: 1px solid black;
+    border-radius: 6px;
+    padding: 5px;
+    height: 32px;
+    box-sizing: border-box;
+    align-items: center;
+}
+.grid-item {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+}
+.k5-button {
+    background-color: #fff;
+    border: 1px solid #b0b8c4;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1em;
+}
+.k5-display {
+    background-color: #e9ecef;
+    border: 1px solid #b0b8c4;
+    border-radius: 4px;
+    text-align: right;
+    padding: 0 6px;
+    font-weight: bold;
+    font-size: 1em;
+}
+.k5-caption {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1em;
+}
+.total-row > #total-caption { 
+    grid-column: 3 / 4;
+}
+.total-row > #accessories-sum-display { 
+    grid-column: 4 / 5;
+    height: 32px;
+}
