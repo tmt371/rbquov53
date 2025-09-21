@@ -10,7 +10,7 @@ export class LeftPanelComponent {
         }
         this.panelElement = panelElement;
 
-        // --- DOM Element References within the Left Panel ---
+        // --- DOM Element References ---
         // K1 Panel
         this.locationButton = document.getElementById('btn-focus-location');
         this.locationInput = document.getElementById('location-input-box');
@@ -26,7 +26,7 @@ export class LeftPanelComponent {
         this.k3OiButton = document.getElementById('btn-batch-cycle-oi');
         this.k3LrButton = document.getElementById('btn-batch-cycle-lr');
         
-        // K4 Panel (Drive & Accessories)
+        // K4 Panel (Drive & Accessories) - Uses old K5 IDs
         this.k4WinderButton = document.getElementById('btn-k5-winder');
         this.k4MotorButton = document.getElementById('btn-k5-motor');
         this.k4RemoteButton = document.getElementById('btn-k5-remote');
@@ -48,7 +48,7 @@ export class LeftPanelComponent {
         this.k4CordCountDisplay = document.getElementById('k5-display-cord-count');
         this.k4TotalDisplay = document.getElementById('k5-display-total');
 
-        // K5 Panel (Summary / Dual / Chain)
+        // K5 Panel (Summary / Dual / Chain) - Uses old K4 IDs and new IDs
         this.k5DualButton = document.getElementById('btn-k4-dual');
         this.k5ChainButton = document.getElementById('btn-k4-chain');
         this.k5DualTotalDisplay = document.getElementById('k4-dual-price-display');
@@ -89,25 +89,58 @@ export class LeftPanelComponent {
         });
         
         const panelBgColors = {
-            'k1-tab': 'var(--k1-bg-color)',
-            'k2-tab': 'var(--k2-bg-color)',
-            'k3-tab': 'var(--k3-bg-color)',
-            'k4-tab': 'var(--k5-bg-color)', // Swapped color
-            'k5-tab': 'var(--k4-bg-color)', // Swapped color
+            'k1-tab': 'var(--k1-bg-color)', 'k2-tab': 'var(--k2-bg-color)',
+            'k3-tab': 'var(--k3-bg-color)', 'k4-tab': 'var(--k5-bg-color)',
+            'k5-tab': 'var(--k4-bg-color)',
         };
         this.panelElement.style.backgroundColor = panelBgColors[activeTabId] || 'var(--k1-bg-color)';
     }
 
     _updatePanelButtonStates(uiState, quoteData) {
         const { 
-            activeEditMode, locationInputValue,
+            activeEditMode, locationInputValue, lfModifiedRowIndexes, 
             k4ActiveMode, k4DualPrice, targetCell, chainInputValue,
             k5ActiveMode, k5RemoteCount, k5ChargerCount, k5CordCount,
             k5WinderTotalPrice, k5MotorTotalPrice, k5RemoteTotalPrice, k5ChargerTotalPrice, k5CordTotalPrice,
             k5GrandTotal, accessoriesSum
         } = uiState;
-
+        const { rollerBlindItems } = quoteData;
         const formatPrice = (price) => (typeof price === 'number') ? `$${price.toFixed(2)}` : '';
+
+        // --- K1 Location Input State ---
+        if (this.locationButton) this.locationButton.classList.toggle('active', activeEditMode === 'K1');
+        if (this.locationInput) {
+            const isLocationActive = activeEditMode === 'K1';
+            this.locationInput.disabled = !isLocationActive;
+            this.locationInput.classList.toggle('active', isLocationActive);
+            if (this.locationInput.value !== locationInputValue) this.locationInput.value = locationInputValue;
+        }
+        
+        // --- K2 Button Active/Disabled States ---
+        const isFCMode = activeEditMode === 'K2';
+        const isLFSelectMode = activeEditMode === 'K2_LF_SELECT';
+        const isLFDeleteMode = activeEditMode === 'K2_LF_DELETE_SELECT';
+        const isAnyK2ModeActive = isFCMode || isLFSelectMode || isLFDeleteMode;
+        if (this.fabricColorButton) this.fabricColorButton.classList.toggle('active', isFCMode);
+        if (this.lfButton) this.lfButton.classList.toggle('active', isLFSelectMode);
+        if (this.lfDelButton) this.lfDelButton.classList.toggle('active', isLFDeleteMode);
+        const hasBO1 = rollerBlindItems.some(item => item.fabricType === 'BO1');
+        const hasLFModified = lfModifiedRowIndexes.size > 0;
+        if (this.locationButton) this.locationButton.disabled = isAnyK2ModeActive;
+        if (this.fabricColorButton) this.fabricColorButton.disabled = activeEditMode !== null && !isFCMode;
+        if (this.lfButton) this.lfButton.disabled = (activeEditMode !== null && !isLFSelectMode) || !hasBO1;
+        if (this.lfDelButton) this.lfDelButton.disabled = (activeEditMode !== null && !isLFDeleteMode) || !hasLFModified;
+
+        // --- K3 Button Active/Disabled States ---
+        const isK3EditMode = activeEditMode === 'K3';
+        if (this.k3EditButton) {
+            this.k3EditButton.classList.toggle('active', isK3EditMode);
+            this.k3EditButton.disabled = activeEditMode !== null && !isK3EditMode;
+        }
+        const k3SubButtonsDisabled = !isK3EditMode;
+        if (this.k3OverButton) this.k3OverButton.disabled = k3SubButtonsDisabled;
+        if (this.k3OiButton) this.k3OiButton.disabled = k3SubButtonsDisabled;
+        if (this.k3LrButton) this.k3LrButton.disabled = k3SubButtonsDisabled;
 
         // --- K4 Panel (Drive & Accessories) Rendering ---
         const k4Buttons = [
@@ -129,29 +162,27 @@ export class LeftPanelComponent {
         if (this.k4ChargerDisplay) this.k4ChargerDisplay.value = formatPrice(k5ChargerTotalPrice);
         if (this.k4CordDisplay) this.k4CordDisplay.value = formatPrice(k5CordTotalPrice);
         if (this.k4RemoteCountDisplay) this.k4RemoteCountDisplay.value = k5RemoteCount;
-        const remoteBtnsDisabled = k5ActiveMode !== 'remote';
-        if (this.k4RemoteAddBtn) this.k4RemoteAddBtn.disabled = remoteBtnsDisabled;
-        if (this.k4RemoteSubtractBtn) this.k4RemoteSubtractBtn.disabled = remoteBtnsDisabled;
+        if (this.k4RemoteAddBtn) this.k4RemoteAddBtn.disabled = k5ActiveMode !== 'remote';
+        if (this.k4RemoteSubtractBtn) this.k4RemoteSubtractBtn.disabled = k5ActiveMode !== 'remote';
         if (this.k4ChargerCountDisplay) this.k4ChargerCountDisplay.value = k5ChargerCount;
-        const chargerBtnsDisabled = k5ActiveMode !== 'charger';
-        if (this.k4ChargerAddBtn) this.k4ChargerAddBtn.disabled = chargerBtnsDisabled;
-        if (this.k4ChargerSubtractBtn) this.k4ChargerSubtractBtn.disabled = chargerBtnsDisabled;
+        if (this.k4ChargerAddBtn) this.k4ChargerAddBtn.disabled = k5ActiveMode !== 'charger';
+        if (this.k4ChargerSubtractBtn) this.k4ChargerSubtractBtn.disabled = k5ActiveMode !== 'charger';
         if (this.k4CordCountDisplay) this.k4CordCountDisplay.value = k5CordCount;
-        const cordBtnsDisabled = k5ActiveMode !== 'cord';
-        if (this.k4CordAddBtn) this.k4CordAddBtn.disabled = cordBtnsDisabled;
-        if (this.k4CordSubtractBtn) this.k4CordSubtractBtn.disabled = cordBtnsDisabled;
+        if (this.k4CordAddBtn) this.k4CordAddBtn.disabled = k5ActiveMode !== 'cord';
+        if (this.k4CordSubtractBtn) this.k4CordSubtractBtn.disabled = k5ActiveMode !== 'cord';
         if (this.k4TotalDisplay) this.k4TotalDisplay.value = formatPrice(k5GrandTotal);
 
         // --- K5 Panel (Summary / Dual / Chain) Rendering ---
+        const isAnyK5ModeActive = k4ActiveMode !== null;
         if (this.k5DualButton) {
             this.k5DualButton.classList.toggle('active', k4ActiveMode === 'dual');
+            this.k5DualButton.disabled = isAnyK5ModeActive && k4ActiveMode !== 'dual';
         }
         if (this.k5ChainButton) {
             this.k5ChainButton.classList.toggle('active', k4ActiveMode === 'chain');
+            this.k5ChainButton.disabled = isAnyK5ModeActive && k4ActiveMode !== 'chain';
         }
-        if (this.k5DualTotalDisplay) {
-             this.k5DualTotalDisplay.textContent = formatPrice(k4DualPrice);
-        }
+        if (this.k5DualTotalDisplay) this.k5DualTotalDisplay.textContent = formatPrice(k4DualPrice);
         if (this.k5ChainLengthDisplay) {
             const isChainInputActive = k4ActiveMode === 'chain' && targetCell && targetCell.column === 'chain';
             this.k5ChainLengthDisplay.classList.toggle('active', isChainInputActive);
