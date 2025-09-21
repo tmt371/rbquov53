@@ -119,37 +119,21 @@
                     <input type="text" id="k5-display-charger" class="panel-input k5-display-box" placeholder="Charger Total..." readonly>
                     <input type="text" id="k5-display-cord" class="panel-input k5-display-box" placeholder="Cord Total..." readonly>
                 </div>
-                <div class="feature-group k5-combined-row-top">
-                    <div class="k5-total-label-container">
-                        <span class="k5-total-label">Total</span>
-                    </div>
-                    <div class="k5-total-display-container">
-                        </div>
+                <div class="feature-group k5-combined-row">
+                    <span class="k5-total-label">Total</span>
+                    <input type="text" id="k5-display-total" class="panel-input k5-total-display" readonly>
                     <div class="k5-counter-group" id="k5-counter-remote">
                         <button id="btn-k5-remote-add" class="k5-counter-btn" disabled>+</button>
-                    </div>
-                    <div class="k5-counter-group" id="k5-counter-charger">
-                        <button id="btn-k5-charger-add" class="k5-counter-btn" disabled>+</button>
-                    </div>
-                    <div class="k5-counter-group" id="k5-counter-cord">
-                        <button id="btn-k5-cord-add" class="k5-counter-btn" disabled>+</button>
-                    </div>
-                </div>
-                <div class="feature-group k5-combined-row-bottom">
-                    <div class="k5-total-label-container">
-                       </div>
-                    <div class="k5-total-display-container">
-                         <input type="text" id="k5-display-total" class="panel-input k5-total-display" readonly>
-                    </div>
-                    <div class="k5-counter-group">
                         <input type="text" id="k5-display-remote-count" class="panel-input k5-counter-display" value="0" readonly>
                         <button id="btn-k5-remote-subtract" class="k5-counter-btn" disabled>-</button>
                     </div>
-                    <div class="k5-counter-group">
+                    <div class="k5-counter-group" id="k5-counter-charger">
+                        <button id="btn-k5-charger-add" class="k5-counter-btn" disabled>+</button>
                         <input type="text" id="k5-display-charger-count" class="panel-input k5-counter-display" value="0" readonly>
                         <button id="btn-k5-charger-subtract" class="k5-counter-btn" disabled>-</button>
                     </div>
-                    <div class="k5-counter-group">
+                    <div class="k5-counter-group" id="k5-counter-cord">
+                        <button id="btn-k5-cord-add" class="k5-counter-btn" disabled>+</button>
                         <input type="text" id="k5-display-cord-count" class="panel-input k5-counter-display" value="0" readonly>
                         <button id="btn-k5-cord-subtract" class="k5-counter-btn" disabled>-</button>
                     </div>

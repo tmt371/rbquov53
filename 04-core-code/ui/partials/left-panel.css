@@ -233,7 +233,7 @@
 
 /* --- [MODIFIED] K5 Panel Styles --- */
 .k5-grid {
-    gap: 8px; /* Reduced gap for tighter layout */
+    gap: 12px;
 }
 #k5-content .feature-buttons {
     display: grid;
@@ -258,30 +258,36 @@
     font-size: 0.9em;
     padding: 6px;
 }
-.k5-combined-row-top,
-.k5-combined-row-bottom {
+.k5-combined-row {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 8px;
-}
-.k5-combined-row-top {
-    align-items: flex-end;
-}
-.k5-total-label-container {
-    text-align: center;
+    align-items: center; /* Vertically align all items */
 }
 .k5-total-label {
+    grid-column: 1 / 2; /* Place in column 1 */
     font-weight: bold;
     font-size: 1.1em;
     color: #2c3e50;
+    text-align: center;
 }
 .k5-total-display {
+    grid-column: 2 / 3; /* Place in column 2 */
     font-size: 1.2em;
     font-weight: bold;
     color: #ec4899;
     text-align: right;
     padding: 6px;
     background-color: #fff;
+}
+#k5-counter-remote {
+    grid-column: 3 / 4; /* Place in column 3 */
+}
+#k5-counter-charger {
+    grid-column: 4 / 5; /* Place in column 4 */
+}
+#k5-counter-cord {
+    grid-column: 5 / 6; /* Place in column 5 */
 }
 .k5-counter-group {
     display: flex;
