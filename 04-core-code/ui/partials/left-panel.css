@@ -233,7 +233,7 @@
 
 /* --- [MODIFIED] K5 Panel Styles --- */
 .k5-grid {
-    gap: 12px;
+    gap: 8px; /* Reduced gap for tighter layout */
 }
 #k5-content .feature-buttons {
     display: grid;
@@ -258,23 +258,22 @@
     font-size: 0.9em;
     padding: 6px;
 }
-.k5-combined-row {
+.k5-combined-row-top,
+.k5-combined-row-bottom {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 8px;
-    align-items: flex-start; /* Align to the top */
 }
-.k5-total-box {
-    grid-column: span 2;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+.k5-combined-row-top {
+    align-items: flex-end;
+}
+.k5-total-label-container {
+    text-align: center;
 }
 .k5-total-label {
     font-weight: bold;
-    font-size: 0.9em;
+    font-size: 1.1em;
     color: #2c3e50;
-    text-align: left;
 }
 .k5-total-display {
     font-size: 1.2em;
