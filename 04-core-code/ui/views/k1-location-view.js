@@ -45,7 +45,7 @@ export class K1LocationView {
             this.uiService.setTargetCell(null);
             this.uiService.setLocationInputValue('');
         }
-        this.publish();
+        // [REMOVED] this.publish();
     }
 
     /**
@@ -67,7 +67,7 @@ export class K1LocationView {
             this.uiService.setTargetCell({ rowIndex: nextRowIndex, column: 'location' });
             const nextItem = this.quoteService.getItems()[nextRowIndex];
             this.uiService.setLocationInputValue(nextItem.location || '');
-            this.publish();
+            // [REMOVED] this.publish();
             // Refocus and select the input for continuous entry
             setTimeout(() => locationInput?.select(), 0);
         } else {
@@ -85,7 +85,7 @@ export class K1LocationView {
         this.uiService.setTargetCell({ rowIndex, column: 'location' });
         const item = this.quoteService.getItems()[rowIndex];
         this.uiService.setLocationInputValue(item.location || '');
-        this.publish();
+        // [REMOVED] this.publish();
         
         const locationInput = document.getElementById('location-input-box');
         setTimeout(() => {
@@ -100,6 +100,5 @@ export class K1LocationView {
     activate() {
         // Set the visible columns for the K1 tab
         this.uiService.setVisibleColumns(['sequence', 'fabricTypeDisplay', 'location']);
-        // [REFACTOR] The publish call is now centralized in DetailConfigView's activateTab method.
     }
 }

@@ -74,14 +74,13 @@ export class DetailConfigView {
         this.publish();
     }
     
-    // --- [RESTORED] Event Handlers for K1, K2, K3 ---
-
     handleFocusModeRequest({ column }) {
         if (column === 'location') {
             this.k1View.handleFocusModeRequest();
         } else if (column === 'fabric') {
             this.k2View.handleFocusModeRequest();
         }
+        this.publish();
     }
     
     handleLocationInputEnter({ value }) {
@@ -101,6 +100,7 @@ export class DetailConfigView {
         if (activeEditMode === 'K2_LF_SELECT' || activeEditMode === 'K2_LF_DELETE_SELECT') {
             this.k2View.handleSequenceCellClick({ rowIndex });
         }
+        this.publish();
     }
 
     handleLFEditRequest() {
@@ -118,8 +118,6 @@ export class DetailConfigView {
     handleBatchCycle({ column }) {
         this.k3View.handleBatchCycle({ column });
     }
-
-    // --- Renamed Event Handlers for K4 (Drive/Acc) and K5 (Dual/Chain) ---
 
     handleDualChainModeChange({ mode }) {
         this.dualChainView.handleModeChange({ mode });
@@ -165,5 +163,7 @@ export class DetailConfigView {
             this.k3View.handleTableCellClick({ rowIndex, column });
             return;
         }
+        // Fallback publish for simple clicks that don't enter a sub-handler but require re-render
+        this.publish();
     }
 }

@@ -18,7 +18,7 @@ export class K3OptionsView {
         const currentMode = this.uiService.getState().activeEditMode;
         const newMode = currentMode === 'K3' ? null : 'K3';
         this.uiService.setActiveEditMode(newMode);
-        this.publish();
+        // [REMOVED] this.publish();
     }
 
     /**
@@ -43,7 +43,7 @@ export class K3OptionsView {
         const nextValue = sequence[nextIndex];
         
         this.quoteService.batchUpdateProperty(column, nextValue);
-        this.publish();
+        // [REMOVED] this.publish();
     }
     
     /**
@@ -53,12 +53,12 @@ export class K3OptionsView {
     handleTableCellClick({ rowIndex, column }) {
         this.uiService.setActiveCell(rowIndex, column);
         this.quoteService.cycleK3Property(rowIndex, column);
-        this.publish();
+        // [REMOVED] this.publish();
         
         // Briefly highlight the cell by setting and then clearing the active cell state
         setTimeout(() => {
             this.uiService.setActiveCell(null, null);
-            this.publish();
+            this.publish(); // [KEPT] This is a special case for temporary visual effect, needs its own publish.
         }, 150);
     }
 
@@ -67,6 +67,6 @@ export class K3OptionsView {
      */
     activate() {
         this.uiService.setVisibleColumns(['sequence', 'fabricTypeDisplay', 'location', 'over', 'oi', 'lr']);
-        this.publish();
+        // [REMOVED] this.publish();
     }
 }

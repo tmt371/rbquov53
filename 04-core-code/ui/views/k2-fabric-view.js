@@ -59,15 +59,13 @@ export class K2FabricView {
         this.uiService.setActiveEditMode('K2');
         this._updatePanelInputsState(); 
         this.uiService.setActiveCell(null, null);
-        this.publish();
+        // [REMOVED] this.publish();
     }
 
     handlePanelInputBlur({ type, field, value }) {
         const { lfSelectedRowIndexes } = this.uiService.getState();
         
-        // This logic is now primarily for non-LF fields, as LF saving is handled explicitly on Enter.
         if (type === 'LF') {
-           // To be safe, we can trigger a save on blur too.
             const fNameInput = document.querySelector('input[data-type="LF"][data-field="fabric"]');
             const fColorInput = document.querySelector('input[data-type="LF"][data-field="color"]');
             
@@ -79,7 +77,7 @@ export class K2FabricView {
             this.quoteService.batchUpdatePropertyByType(type, field, value);
         }
         
-        this.publish();
+        // [REMOVED] this.publish();
     }
 
     handlePanelInputEnter() {
@@ -92,7 +90,6 @@ export class K2FabricView {
             nextInput.focus();
             nextInput.select();
         } else {
-            // [FIX] For the last input, explicitly save LF data before exiting the mode.
             if (activeElement.dataset.type === 'LF' || (activeElement.dataset.type !== 'LF' && this.uiService.getState().activeEditMode === 'K2')) {
                  const { lfSelectedRowIndexes } = this.uiService.getState();
                  const fNameInput = document.querySelector('input[data-type="LF"][data-field="fabric"]');
@@ -131,7 +128,7 @@ export class K2FabricView {
             if (activeEditMode === 'K2_LF_SELECT') {
                 this._updatePanelInputsState();
             }
-            this.publish();
+            // [REMOVED] this.publish();
         }
     }
 
@@ -143,7 +140,7 @@ export class K2FabricView {
         } else {
             this.uiService.setActiveEditMode('K2_LF_SELECT');
             this.eventAggregator.publish('showNotification', { message: 'Please select the items with TYPE \'BO1\' to edit the fabric name and color settings for the roller blinds.' });
-            this.publish();
+            // [REMOVED] this.publish();
         }
     }
 
@@ -161,7 +158,7 @@ export class K2FabricView {
         } else {
             this.uiService.setActiveEditMode('K2_LF_DELETE_SELECT');
             this.eventAggregator.publish('showNotification', { message: 'Please select the roller blinds for which you want to cancel the Light-Filter fabric setting. After selection, click the LF-Del button again.' });
-            this.publish();
+            // [REMOVED] this.publish();
         }
     }
 
@@ -170,7 +167,7 @@ export class K2FabricView {
         this.uiService.clearRowSelection();
         this.uiService.clearLFSelection();
         this._updatePanelInputsState();
-        this.publish();
+        // [REMOVED] this.publish();
     }
 
     _updatePanelInputsState() {
@@ -191,9 +188,7 @@ export class K2FabricView {
                     input.disabled = !isEnabled;
 
                     if (isEnabled) {
-                        if (!firstEnabledInput) {
-                            firstEnabledInput = input;
-                        }
+                        if (!firstEnabledInput) firstEnabledInput = input;
                         const itemWithData = items.find(item => item.fabricType === type && typeof item[field] === 'string');
                         input.value = itemWithData ? itemWithData[field] : '';
                     }
@@ -229,9 +224,6 @@ export class K2FabricView {
         }
     }
     
-    /**
-     * This method is called by the main DetailConfigView when the K2 tab becomes active.
-     */
     activate() {
         this.uiService.setVisibleColumns(['sequence', 'fabricTypeDisplay', 'fabric', 'color']);
     }
