@@ -55,7 +55,6 @@ export class DetailConfigView {
                 break;
             case 'k2-tab':
                 this.k2View.activate();
-                this.k2View._updatePanelInputsState();
                 break;
             case 'k3-tab':
                 this.k3View.activate();
