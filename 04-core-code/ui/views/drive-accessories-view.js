@@ -21,16 +21,19 @@ export class DriveAccessoriesView {
         const currentMode = this.uiService.getState().k5ActiveMode;
         const newMode = currentMode === mode ? null : mode;
 
+        // --- Logic on EXITING a mode ---
         if (currentMode) {
             this._recalculateAllK5Prices();
         }
 
         this.uiService.setK5ActiveMode(newMode);
 
+        // --- Logic on ENTERING a new mode ---
         if (newMode) {
             const message = this._getHintMessage(newMode);
             this.eventAggregator.publish('showNotification', { message });
 
+            // Special logic for auto-setting counts
             const items = this.quoteService.getItems();
             const hasMotor = items.some(item => !!item.motor);
             if (hasMotor) {
@@ -42,8 +45,8 @@ export class DriveAccessoriesView {
                 }
             }
         }
-        
-        // [REMOVED] this.publish();
+
+        this.publish();
     }
 
     handleTableCellClick({ rowIndex, column }) {
@@ -61,24 +64,24 @@ export class DriveAccessoriesView {
                 this.eventAggregator.publish('showConfirmationDialog', {
                     message: '該捲簾已經設定為電動，確定要改為HD？',
                     buttons: [
-                        { text: '確定', callback: () => this._toggleWinder(rowIndex) },
+                        { text: '確定', callback: () => this._toggleWinder(rowIndex, true) },
                         { text: '取消', className: 'secondary', callback: () => {} }
                     ]
                 });
             } else {
-                this._toggleWinder(rowIndex);
+                this._toggleWinder(rowIndex, false);
             }
         } else if (isActivatingMotor) {
             if (item.winder) {
                 this.eventAggregator.publish('showConfirmationDialog', {
                     message: '該捲簾已經設定為HD，確定要改為電動？',
                     buttons: [
-                        { text: '確定', callback: () => this._toggleMotor(rowIndex) },
+                        { text: '確定', callback: () => this._toggleMotor(rowIndex, true) },
                         { text: '取消', className: 'secondary', callback: () => {} }
                     ]
                 });
             } else {
-                this._toggleMotor(rowIndex);
+                this._toggleMotor(rowIndex, false);
             }
         }
     }
@@ -93,6 +96,7 @@ export class DriveAccessoriesView {
         let currentCount = counts[accessory];
         const newCount = direction === 'add' ? currentCount + 1 : Math.max(0, currentCount - 1);
 
+        // Special logic for reducing to zero
         if (newCount === 0) {
             const items = this.quoteService.getItems();
             const hasMotor = items.some(item => !!item.motor);
@@ -103,31 +107,31 @@ export class DriveAccessoriesView {
                     buttons: [
                         { text: '確定不要', callback: () => {
                             this.uiService.setK5Count(accessory, 0);
-                            this.publish(); // This specific case needs an immediate publish for the manager to catch
+                            this.publish();
                         }},
                         { text: '取消', className: 'secondary', callback: () => {} }
                     ]
                 });
-                return;
+                return; // Prevent update until user confirms
             }
         }
         
         this.uiService.setK5Count(accessory, newCount);
-        // [REMOVED] this.publish();
+        this.publish();
     }
 
-    _toggleWinder(rowIndex) {
+    _toggleWinder(rowIndex, isConfirmed) {
         const item = this.quoteService.getItems()[rowIndex];
         const newValue = item.winder ? '' : 'HD';
         this.quoteService.updateWinderMotorProperty(rowIndex, 'winder', newValue);
-        this.publish(); // This specific case needs an immediate publish for the manager to catch
+        this.publish();
     }
 
-    _toggleMotor(rowIndex) {
+    _toggleMotor(rowIndex, isConfirmed) {
         const item = this.quoteService.getItems()[rowIndex];
         const newValue = item.motor ? '' : 'Motor';
         this.quoteService.updateWinderMotorProperty(rowIndex, 'motor', newValue);
-        this.publish(); // This specific case needs an immediate publish for the manager to catch
+        this.publish();
     }
     
     _recalculateAllK5Prices() {
